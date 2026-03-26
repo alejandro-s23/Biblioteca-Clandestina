@@ -1,0 +1,98 @@
+@model Library.Models.ViewModel.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "PAINEL_DE_CONTROLE";
+}
+
+<div class="container mt-4">
+    <h2 class="titulo-manuscrito mb-4 text-center">ARQUIVO CENTRAL ADMINISTRATIVO</h2>
+
+    <div class="row mb-5">
+        <div class="col-md-4">
+            <div class="card card-manuscrito p-3 text-center border-couro">
+                <h6 class="text-muted">SOLICITAÇÕES PENDENTES</h6>
+                <p class="display-4 fonte-manuscrito">@Model.TotalPendingRequests</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card card-manuscrito p-3 text-center border-couro">
+                <h6 class="text-muted">EMPRÉSTIMOS ATIVOS</h6>
+                <p class="display-4 fonte-manuscrito">@Model.TotalActiveRents</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card card-manuscrito p-3 text-center border-couro">
+                <h6 class="text-muted">DISPONIBILIDADE ACERVO</h6>
+                <p class="display-4 fonte-manuscrito">@Model.AvailabilityRate.ToString("F0")%</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card card-manuscrito mb-5 p-4">
+        <h4 class="titulo-manuscrito mb-3" style="color: var(--borda-couro);">SOLICITAÇÕES DE CADASTRO</h4>
+        <table class="table table-sm table-hover italic">
+            <thead>
+            <tr>
+                <th>NOME</th>
+                <th>MATRÍCULA</th>
+                <th>AÇÃO</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var request in Model.PendingRequests) {
+                <tr>
+                    <td>@request.FirstName @request.LastName</td>
+                    <td>@request.Registration</td>
+                    <td>
+                        <a asp-controller="Admin" 
+                           asp-action="Approve" 
+                           asp-route-id="@request.Id" 
+                           class="btn btn-outline-success">
+                            CARIMBAR APROVAÇÃO
+                        </a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        @if (Model.TotalPendingRequests > 5)
+        {
+            <a class="fonte-manuscrito">Ver Mais...</a>
+        }
+    </div>
+
+    <div class="card card-manuscrito p-4">
+        <h4 class="titulo-manuscrito mb-3" style="color: var(--borda-couro);">POSSES DE LIVROS ATIVOS</h4>
+        <table class="table table-sm table-hover">
+            <thead>
+            <tr>
+                <th>Livro</th>
+                <th>Portador</th>
+                <th>Data_da_Posse</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var rent in Model.ActiveRents) {
+                <tr>
+                    <td>@rent.Book?.Title</td>
+                    <td>@rent.Client?.FirstName</td>
+                    <td>@rent.RentDate.ToString("dd/MM/yyyy")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        @if (Model.TotalActiveRents > 5)
+        {
+            <a class="fonte-manuscrito">Ver Mais...</a>
+        }
+    </div>
+</div>
+
+@section NavItems {
+    <li class="nav-item">
+        <a class="nav-link text-clandestino" asp-controller="Admin" asp-action="RegisterBook">REGISTRAR LIVRO</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-clandestino" asp-controller="Home" asp-action="Index">VISÃO CLIENTE</a>
+    </li>
+    
+}

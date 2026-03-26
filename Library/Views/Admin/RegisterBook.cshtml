@@ -1,0 +1,66 @@
+@model Library.Models.Book
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Registrar Livro";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="card card-manuscrito shadow-lg p-4 mx-auto" style="max-width: 800px;">
+        <div class="text-center mb-4">
+            <h2 class="titulo-manuscrito">REGISTRO DE LIVROS</h2>
+            <p class="italic text-muted small">"Preencha com tinta indelével para os registros do arquivo."</p>
+            <hr class="border-couro" style="width: 50%; margin: 0 auto;">
+        </div>
+        
+        @if (TempData["MensagemSucesso"] != null)
+        {
+            <div class="alert alert-success card-manuscrito border-couro alert-dismissible fade show" role="alert">
+                <strong class="text-clandestino">✓ REGISTRO CONFIRMADO:</strong> 
+                <span class="italic">@TempData["MensagemSucesso"]</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        
+        <form asp-controller="Admin" asp-action="RegisterBook" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+
+            <h5 class="fonte-manuscrito mt-3 mb-3" style="color: var(--borda-couro);">I. DADOS DO LIVRO</h5>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="Title" class="form-label">Título</label> 
+                    <input asp-for="Title" class="form-control input-manuscrito" placeholder="Título da Obra de Arte"/>
+                    
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6 position-relative">
+                    <label asp-for="Author" class="form-label">Autor do Livro</label>
+    
+                    @* Input de texto normal *@
+                    <input asp-for="Author" id="authorInput" class="form-control input-manuscrito" 
+                           autocomplete="off" placeholder="Digite ou selecione um autor..."/>
+    
+                    @* Nossa própria lista de sugestões (substituindo o datalist) *@
+                    <div id="authorDropdown" class="custom-dropdown shadow-lg d-none">
+                        @if (ViewBag.Authors != null)
+                        {
+                            foreach (var autor in (List<string>)ViewBag.Authors)
+                            {
+                                <div class="dropdown-item-manuscrito">@autor</div>
+                            }
+                        }
+                    </div>
+                    <span asp-validation-for="Author" class="text-danger small"></span>
+                </div>
+            </div>
+            <div class="mt-5">
+                <button type="submit" class="btn btn-manuscrito btn-border-manuscrito w-100 py-2">
+                    SELAR REGISTRO
+                </button>
+            </div>
+        </form>
+        <p><br/></p>
+        <div style="text-align: center">
+            <a asp-controller="Admin" asp-action="Index" class="text-clandestino">RETORNAR AO DASHBOARD</a>
+        </div>
+    </div>
+</div>

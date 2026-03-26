@@ -1,0 +1,168 @@
+html {
+  font-size: 14px;
+  background-color: #f4f1ea;
+  position: relative;
+  min-height: 100%;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+    background-color: #f4f1ea;
+  }
+}
+
+.card{
+
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+body {
+  font-family: 'Lora', serif; /* Opcional: Uma fonte serifada fica mais "livro antigo" */
+  transition: background-color 0.5s, color 0.5s; /* Transição suave na troca */
+  margin-bottom: 60px;
+  background-color: #f4f1ea;
+  color: #3c2f2f;
+}
+
+.card-title {
+  color: #a0522d;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}
+
+/* No seu arquivo site.css, substitua o bloco :root */
+:root {
+  --fundo-manuscrito: #f4f1ea;   /* Cor de papel linho/pergaminho */
+  --texto-tinta: #3c2f2f;        /* Cor de tinta de pena (marrom café) */
+  --borda-couro: #a0522d;        /* Cor de couro sienna */
+  --destaque-velho: #d4a373;
+}
+
+/* Atualize suas classes customizadas (.border-clandestino, .text-clandestino, .btn-clandestino) para usar estas novas variáveis */
+.text-clandestino {
+  color: var(--texto-tinta) !important;
+}
+
+.btn-border-manuscrito {
+  border-color: var(--texto-tinta) !important;
+}
+.btn-border-manuscrito:hover {
+  border-color: var(--bs-success) !important;
+  border-width: 0.2rem;
+  font-weight: bold;
+  color: var(--texto-tinta) !important;
+}
+
+.text-clandestinoLight {
+  color: var(--fundo-manuscrito) !important;
+}
+
+.border-clandestino {
+  border-color: var(--borda-couro) !important;
+}
+
+.fonte-manuscrito {
+  font-family: 'Lora', 'Georgia', serif;
+  letter-spacing: 1px;
+}
+
+/* Sobrescrevendo a cor 'preta' do Bootstrap Navbar */
+.navbar-light .navbar-brand,
+.navbar-light .nav-link {
+  color: var(--texto-tinta) !important; /* Nossa cor #3c2f2f */
+  font-family: 'Lora', 'Georgia', serif; /* Fonte com serifa para parecer livro */
+  font-weight: 600;
+}
+
+/* Efeito de 'Passar a Pena' (Hover) */
+.navbar-light .nav-link:hover {
+  color: var(--borda-couro) !important; /* Muda para a cor de couro ao passar o mouse */
+  text-decoration: underline; /* Simula um grifo manual */
+}
+
+/* Estilo para o Título Principal (Manuscrito) */
+.titulo-manuscrito {
+  font-family: 'Eagle Lake', serif ; /* Uma fonte que parece escrita à mão */
+  font-size: 1.5rem;
+  color: var(--texto-tinta);
+}
+/* Estilo para o alerta de registro de livro */
+.alert-success.card-manuscrito {
+  background-color: #f4ecd8 !important; /* Cor de papel envelhecido */
+  color: #4b2c20; /* Cor de tinta marrom */
+  border-left: 5px solid #8b4513; /* Borda de couro */
+  font-family: 'Lora', serif;
+  box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Força a visibilidade da tinta no input e na lista de sugestões */
+input[list].input-manuscrito {
+  color: var(--texto-tinta) !important;
+  background-color: var(--fundo-manuscrito) !important;
+}
+
+/* Remove o estilo azulado de foco que apareceu no seu print anterior */
+.input-manuscrito:focus {
+  outline: none !important;
+  border-bottom: 2px solid var(--borda-couro) !important;
+  box-shadow: none !important;
+}
+
+/* Estilo para as opções do datalist em alguns navegadores */
+datalist option {
+  background-color: var(--fundo-manuscrito);
+  color: var(--texto-tinta);
+}
+/* Remove a interferência de cores do sistema no datalist */
+input::-webkit-calendar-picker-indicator {
+  display: none !important; /* Esconde a seta nativa que causa o bug de cor no Mac */
+}
+
+/* Garante que o texto digitado seja sempre da cor da tinta */
+.input-manuscrito {
+  color: #3c2f2f !important;
+  background-color: #f4f1ea !important;
+  -webkit-text-fill-color: #3c2f2f !important; /* Força a cor no Safari/Chrome */
+}
+
+/* Tenta forçar a cor das opções que o navegador renderiza */
+#authorsList option {
+  background-color: #f4f1ea;
+  color: #3c2f2f;
+}
+
+/* Container da lista customizada */
+.custom-dropdown {
+  position: absolute;
+  z-index: 1000;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: #fcf9f2; /* Cor de papel novo */
+  border: 1px solid var(--borda-couro);
+  border-top: none;
+}
+
+/* Itens da lista */
+.dropdown-item-manuscrito {
+  padding: 8px 12px;
+  cursor: pointer;
+  color: var(--texto-tinta);
+  border-bottom: 1px dashed #d4a373;
+}
+
+.dropdown-item-manuscrito:hover {
+  background-color: #eee5d3;
+  font-weight: bold;
+}
