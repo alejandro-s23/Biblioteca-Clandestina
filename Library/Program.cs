@@ -27,8 +27,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.AccessDeniedPath = "/Account/AccessDenied"; // Caminho caso não seja admin
         options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // Tempo do selo de validade
     });
-builder.Services.AddScoped<IRentalService, RentalService>();
 builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddScoped<IRentalService, RentalService>();
 
 var app = builder.Build();
 

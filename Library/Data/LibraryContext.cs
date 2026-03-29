@@ -20,8 +20,8 @@ namespace Library.Data
             // 1. Configura a relação 1:1 entre Book e BookRent
             modelBuilder.Entity<BookRent>()
                 .HasOne(br => br.Book)
-                .WithOne(b => b.CurrentRent)
-                .HasForeignKey<BookRent>(br => br.BookId);
+                .WithMany()
+                .HasForeignKey(br => br.BookId);
 
             // 2. O GRANDE SEGREDO: Índice Único Filtrado
             // Isso garante que um ClientId só apareça UMA VEZ na tabela onde ReturnDate for NULL

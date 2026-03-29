@@ -1,34 +1,67 @@
+@using Library.Extensions
 @model Library.Models.ViewModel.UserProfileViewModel
 @{
+    Layout = "_Layout";
     ViewData["Title"] = "Meu Perfil";
+}
+
+@section NavItems
+{
+    <li class="nav-item">
+        <a class="nav-link" asp-controller="@User.GetHomePage()" asp-action="Index">VOLTAR</a>
+    </li>
 }
 
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-6">
             <div class="card card-manuscrito p-4 shadow">
-                <h3 class="titulo-manuscrito border-bottom border-couro pb-2">DADOS_DO_PORTADOR</h3>
+                <h3 class="titulo-manuscrito border-bottom border-couro pb-2">DADOS DO PORTADOR</h3>
                 <form asp-action="UpdateProfile" method="post" class="mt-3">
-                    <div class="mb-3">
-                        <label class="form-label">Matrícula (Imutável)</label>
-                        <input type="text" class="form-control input-manuscrito bg-light" value="@Model.Registration" readonly />
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Matrícula (Imutável)</label>
+                            <input type="text" class="form-control input-manuscrito bg-light" value="@Model.Registration" readonly />
+                        </div>
+                        <div class="col-md-8 mb-3">
+                            <label class="form-label">Nome (Imutável)</label>
+                            <input asp-for="FullName" class="form-control input-manuscrito" readonly/>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Nome</label>
-                        <input asp-for="FirstName" class="form-control input-manuscrito" />
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Telefone (DDD)</label>
+                            <input asp-for="Phone" class="form-control input-manuscrito bg-light" value="@Model.Phone"/>
+                        </div>
+                        <div class="col-md-8 mb-3">
+                            <label class="form-label">Email</label>
+                            <input asp-for="Email" class="form-control input-manuscrito" />
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Email</label>
-                        <input asp-for="Email" class="form-control input-manuscrito" />
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Bairro</label>
+                            <input asp-for="District" class="form-control input-manuscrito" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Rua</label>
+                            <input asp-for="Address" class="form-control input-manuscrito" />
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label class="form-label">Número</label>
+                            <input asp-for="Number" class="form-control input-manuscrito" />
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-manuscrito w-100">ATUALIZAR_REGISTRO</button>
+
+                    <button type="submit" class="btn btn-manuscrito w-100">ATUALIZAR REGISTRO</button>
                 </form>
             </div>
         </div>
 
         <div class="col-md-6">
             <div class="card card-manuscrito p-4 shadow border-clandestino">
-                <h3 class="titulo-manuscrito border-bottom border-couro pb-2">POSSE_ATUAL</h3>
+                <h3 class="titulo-manuscrito border-bottom border-couro pb-2">POSSE ATUAL</h3>
                 
                 @if (Model.ActiveBook != null)
                 {
@@ -38,8 +71,12 @@
                         <p class="fonte-manuscrito">À @Model.RentTimeDays dias com você</p>
                         
                         <div class="mt-4 p-3 border border-dashed border-couro">
-                            <p class="small text-muted">Deseja devolver este volume aos arquivos?</p>
-                            <form asp-action="ReturnBook" asp-route-bookId="@Model.ActiveBook.Id" method="post">
+                            @if (Model.RentTimeDays > 14)
+                            {
+                                <h5 class="text-danger">DEVOLUÇÃO EM ATRASO!</h5>
+                            }
+                            <p class="small text-muted">Deseja devolver este volume às estantes?</p>
+                            <form asp-action="Return" asp-route-bookId="@Model.ActiveBook.Id" method="post">
                                 <button type="submit" class="btn btn-outline-danger btn-sm">
                                     EFETUAR_DEVOLUÇÃO
                                 </button>
@@ -51,7 +88,7 @@
                 {
                     <div class="text-center mt-5">
                         <p class="italic text-muted">"Suas mãos estão vazias. Nenhum manuscrito sob sua guarda no momento."</p>
-                        <a asp-controller="Books" asp-action="Index" class="btn btn-link text-clandestino">BUSCAR_NAS_ESTANTES</a>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-link text-clandestino">BUSCAR NAS ESTANTES</a>
                     </div>
                 }
             </div>

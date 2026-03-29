@@ -7,7 +7,7 @@
 <div class="container mt-5 mb-5">
     <div class="card card-manuscrito shadow-lg p-4 mx-auto" style="max-width: 800px;">
         <div class="text-center mb-4">
-            <h2 class="titulo-manuscrito">SOLICITAÇÃO_DE_INGRESSO</h2>
+            <h2 class="titulo-manuscrito">SOLICITAÇÃO DE INGRESSO</h2>
             <p class="italic text-muted small">"Preencha com tinta indelével para os registros do arquivo."</p>
             <hr class="border-couro" style="width: 50%; margin: 0 auto;">
         </div>
@@ -29,9 +29,9 @@
                 </div>
             </div>
 
-            <h5 class="fonte-manuscrito mt-4 mb-3" style="color: var(--borda-couro);">II. LOCALIZAÇÃO</h5>
+            <h5 class="fonte-manuscrito mt-4 mb-3" style="color: var(--borda-couro);">II. FORMAS DE CONTATO</h5>
             <div class="row g-3">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label asp-for="City" class="form-label">Cidade</label> 
                     <input asp-for="City" class="form-control input-manuscrito" />
                 </div>
@@ -39,9 +39,21 @@
                     <label asp-for="District" class="form-label">Bairro</label> 
                     <input asp-for="District" class="form-control input-manuscrito" />
                 </div>
-                <div class="col-md-4">
-                    <label asp-for="Address" class="form-label">Endereço (Endereço, Num)</label> 
+                <div class="col-md-5">
+                    <label asp-for="Address" class="form-label">Endereço</label> 
                     <input asp-for="Address" class="form-control input-manuscrito" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="AddressNumber" class="form-label">Número</label> 
+                    <input asp-for="AddressNumber" class="form-control input-manuscrito" value="S/N"/>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Complemento</label> 
+                    <input class="form-control input-manuscrito" placeholder="*Bloco 1, Apto 02*"/>
+                </div>
+                <div class="col-md-5">
+                    <label asp-for="Phone" class="form-label">Telefone (DDD)</label> 
+                    <input asp-for="Phone" class="form-control input-manuscrito" />
                 </div>
             </div>
 
@@ -51,29 +63,26 @@
                     <label asp-for="Email" class="form-label">Correio Eletrônico</label> 
                     <input asp-for="Email" type="email" class="form-control input-manuscrito" />
                 </div>
-                <div class="col-md-6">
-                    <label asp-for="Phone" class="form-label">Telefone (DDD)</label> 
-                    <input asp-for="Phone" class="form-control input-manuscrito" />
-                </div>
+
                 <div class="col-md-6">
                     <label asp-for="Registration" class="form-label">Matrícula</label> 
                     <input asp-for="Registration" class="form-control input-manuscrito" />
                 </div>
                 <div class="col-md-6">
-                    <label asp-for="Password" class="form-label">Chave de Acesso (Senha)</label> 
+                    <label class="form-label">Chave de Acesso (Senha)</label> 
                     <input asp-for="Password" type="password" class="form-control input-manuscrito" />
                 </div>
             </div>
 
             <div class="mt-5">
                 <button type="submit" class="btn btn-manuscrito btn-border-manuscrito w-100 py-2">
-                    SELAR_REGISTRO
+                    SELAR REGISTRO
                 </button>
             </div>
         </form>
         <p><br/></p>
         <div style="text-align: center">
-            <a asp-controller="Access" asp-action="Index" class="text-clandestino">RETORNAR_À_PÁGINA_DE_ACESSO</a>
+            <a asp-controller="Access" asp-action="Index" class="text-clandestino">RETORNAR À PÁGINA DE ACESSO</a>
             </div>
     </div>
 </div>

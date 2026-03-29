@@ -4,14 +4,55 @@
     ViewData["Title"] = "REGISTROS_DE_ACERVO";
 }
 
-<div class="container mt-4">
+<div class="container mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="titulo-manuscrito mb-0">ACERVO</h4>
+        <button class="btn btn-manuscrito btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosBiblioteca">
+            <i class="bi bi-filter" id="filter"></i> FILTROS
+        </button>
+    </div>
+
+    <div class="collapse mb-4" id="filtrosBiblioteca">
+        <div class="card card-manuscrito p-3 shadow-sm border-clandestino">
+            <form asp-action="Index" method="get" class="row g-2">
+                
+                <div class="col-12">
+                    <div class="form-floating mb-2">
+                        <input type="text" name="searchString" value="@ViewBag.CurrentSearch" 
+                               class="form-control input-manuscrito" id="searchInp" placeholder="Buscar...">
+                        <label for="searchInp" class="fonte-manuscrito">Buscar Título</label>
+                    </div>
+                </div>
+
+                <div class="col-6">
+                    <select name="sortOrder" class="form-select form-select-sm input-manuscrito">
+                        <option value="Title" selected="@(ViewBag.CurrentSort == "Title")">Título</option>
+                        <option value="Author" selected="@(ViewBag.CurrentSort == "Author")">Autor</option>
+                        <option value="Available" selected="@(ViewBag.CurrentSort == "Avaliable")">Status</option>
+                    </select>
+                </div>
+
+                <div class="col-6">
+                    <select name="sortDirection" class="form-select form-select-sm input-manuscrito">
+                        <option value="asc" selected="@(ViewBag.CurrentDirection == "asc")">A-Z ↑</option>
+                        <option value="desc" selected="@(ViewBag.CurrentDirection == "desc")">Z-A ↓</option>
+                    </select>
+                </div>
+
+                <div class="col-12 d-flex gap-2 mt-2">
+                    <button type="submit" class="btn btn-manuscrito btn-sm flex-grow-1">APLICAR</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">LIMPAR</a>
+                </div>
+            </form>
+        </div>
+    </div>
     <div class="row">
         @foreach (var item in Model)
         {
             <div class="col-12 col-md-6 col-lg-4 mb-4">
                 <div class="card card-manuscrito h-100">
                     <div class="card-body d-flex flex-column">
-                        
+
                         <h5 class="card-title fw-bold mb-1">@item.Title?.ToUpper()</h5>
                         <p class="card-text italic mb-3 col-12 text-muted">Escrito por: @item.Author</p>
 
@@ -19,17 +60,17 @@
 
                         <div class="mt-auto">
                             <div class="mb-3">
-                                @if (!item.Avaliable) 
+                                @if (!item.Avaliable)
                                 {
                                     <span class="tinta-status-indisponivel">✗_RESERVADO_POR_OUTREM</span>
                                 }
-                                else 
+                                else
                                 {
                                     <span class="tinta-status-disponivel">✓_DISPONÍVEL_PARA_LEITURA</span>
                                 }
                             </div>
 
-                            @if (item.Avaliable) 
+                            @if (item.Avaliable)
                             {
                                 @if (ViewBag.UserHasBook)
                                 {
@@ -39,13 +80,13 @@
                                 }
                                 else
                                 {
-                                    <form asp-action="Reserve"  asp-route-bookId="@item.Id" method="post">
-                                        <input type="hidden" name="bookId" value="@item.Id" />
+                                    <form asp-action="Reserve" asp-route-bookId="@item.Id" method="post">
+                                        <input type="hidden" name="bookId" value="@item.Id"/>
                                         <button type="submit" class="btn btn-outline-success w-100">RESERVAR_MANUSCRITO</button>
                                     </form>
                                 }
-                            } 
-                            else 
+                            }
+                            else
                             {
                                 <button class="btn btn-outline-secondary w-100" disabled>REGISTRO_OCUPADO</button>
                             }

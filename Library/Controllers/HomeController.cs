@@ -1,11 +1,13 @@
 using System.Diagnostics;
 using System.Security.Claims;
 using Library.Data;
+using Library.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Library.Models;
 using Library.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Library.Controllers;
 
@@ -16,9 +18,13 @@ public class HomeController(LibraryContext context, IRentalService rentalService
     private readonly IRentalService _rentalSv = rentalService;
     
     [Authorize]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string searchString, string sortOrder, string sortDirection)
     {
-        var books = await _context.Books.ToListAsync();
+        ViewBag.CurrentSearch = searchString;
+        ViewBag.CurrentSort = sortOrder;
+        ViewBag.CurrentDirection = sortDirection;
+        
+        var books = _context.Books.AsQueryable();
     
         // Verificamos se o usuário logado tem aluguel ativo
         var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -30,8 +36,20 @@ public class HomeController(LibraryContext context, IRentalService rentalService
             userHasBook = await _context.BookRents.AnyAsync(br => br.ClientId == userId && br.ReturnDate == null);
         }
 
+        if (!string.IsNullOrEmpty(searchString))
+        {
+            books = books.Where(b => b.Title != null && b.Title.Contains(searchString));
+        }
+        
+        books = sortOrder switch
+        {
+            "Author" => sortDirection == "desc" ? books.OrderByDescending(b => b.Author) : books.OrderBy(b => b.Author),
+            "Available" => sortDirection == "desc" ? books.OrderByDescending(b => b.Avaliable) : books.OrderBy(b => b.Avaliable),
+            _ => sortDirection == "desc" ? books.OrderByDescending(b => b.Title) : books.OrderBy(b => b.Title),
+        };
+
         ViewBag.UserHasBook = userHasBook;
-        return View(books);
+        return View(await books.ToListAsync());
     }
 
     public IActionResult Privacy()
@@ -46,7 +64,7 @@ public class HomeController(LibraryContext context, IRentalService rentalService
     }
     
     [HttpPost]
-    public async Task<IActionResult> Reserve(int bookId)
+    public async Task<IActionResult> Reserve(Guid bookId)
     {
         var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         
@@ -72,4 +90,6 @@ public class HomeController(LibraryContext context, IRentalService rentalService
 
         return RedirectToAction("Index");
     }
+
+    
 }

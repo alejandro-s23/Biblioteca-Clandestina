@@ -24,11 +24,12 @@ namespace Library.Migrations
 
             modelBuilder.Entity("Library.Models.Book", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<DateTime>("Added")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Author")
                         .IsRequired()
@@ -38,8 +39,8 @@ namespace Library.Migrations
                     b.Property<bool>("Avaliable")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("IdCurrentRent")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("IdCurrentRent")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -48,19 +49,19 @@ namespace Library.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("IdCurrentRent");
+
                     b.ToTable("Books");
                 });
 
             modelBuilder.Entity("Library.Models.BookRent", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BookId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ClientId")
                         .HasColumnType("uniqueidentifier");
@@ -73,8 +74,7 @@ namespace Library.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BookId")
-                        .IsUnique();
+                    b.HasIndex("BookId");
 
                     b.HasIndex("ClientId")
                         .IsUnique()
@@ -91,23 +91,33 @@ namespace Library.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<string>("AddressNumber")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("District")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("IsAdmin")
                         .HasColumnType("bit");
@@ -115,35 +125,45 @@ namespace Library.Migrations
                     b.Property<bool>("IsApproved")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsLocked")
-                        .HasColumnType("bit");
-
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(70)
+                        .HasColumnType("nvarchar(70)");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
 
                     b.Property<string>("Registration")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Clients");
                 });
 
+            modelBuilder.Entity("Library.Models.Book", b =>
+                {
+                    b.HasOne("Library.Models.BookRent", "CurrentRent")
+                        .WithMany()
+                        .HasForeignKey("IdCurrentRent");
+
+                    b.Navigation("CurrentRent");
+                });
+
             modelBuilder.Entity("Library.Models.BookRent", b =>
                 {
                     b.HasOne("Library.Models.Book", "Book")
-                        .WithOne("CurrentRent")
-                        .HasForeignKey("Library.Models.BookRent", "BookId")
+                        .WithMany()
+                        .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -156,11 +176,6 @@ namespace Library.Migrations
                     b.Navigation("Book");
 
                     b.Navigation("Client");
-                });
-
-            modelBuilder.Entity("Library.Models.Book", b =>
-                {
-                    b.Navigation("CurrentRent");
                 });
 #pragma warning restore 612, 618
         }

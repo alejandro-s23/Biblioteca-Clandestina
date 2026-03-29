@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Library.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class ReCreateDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,11 +15,11 @@ namespace Library.Migrations
                 name: "Books",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Author = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Avaliable = table.Column<bool>(type: "bit", nullable: false)
+                    Avaliable = table.Column<bool>(type: "bit", nullable: false),
+                    IdCurrentRent = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -41,8 +41,7 @@ namespace Library.Migrations
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsApproved = table.Column<bool>(type: "bit", nullable: false),
-                    IsAdmin = table.Column<bool>(type: "bit", nullable: false),
-                    IsLocked = table.Column<bool>(type: "bit", nullable: false)
+                    IsAdmin = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -50,27 +49,26 @@ namespace Library.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BookRent",
+                name: "BookRents",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    BookId = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ClientId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ReturnDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BookRent", x => x.Id);
+                    table.PrimaryKey("PK_BookRents", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BookRent_Books_BookId",
+                        name: "FK_BookRents_Books_BookId",
                         column: x => x.BookId,
                         principalTable: "Books",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BookRent_Clients_ClientId",
+                        name: "FK_BookRents_Clients_ClientId",
                         column: x => x.ClientId,
                         principalTable: "Clients",
                         principalColumn: "Id",
@@ -78,14 +76,14 @@ namespace Library.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookRent_BookId",
-                table: "BookRent",
+                name: "IX_BookRents_BookId",
+                table: "BookRents",
                 column: "BookId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookRent_ClientId",
-                table: "BookRent",
+                name: "IX_BookRents_ClientId",
+                table: "BookRents",
                 column: "ClientId",
                 unique: true,
                 filter: "[ReturnDate] IS NULL");
@@ -95,7 +93,7 @@ namespace Library.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "BookRent");
+                name: "BookRents");
 
             migrationBuilder.DropTable(
                 name: "Books");

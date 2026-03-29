@@ -4,8 +4,8 @@ namespace Library.Services;
 
 public interface IRentalService
 {
-    Task<(bool Success, string Message)> RentBookAsync(int bookId, Guid clientId);
-    Task<(bool Success, string Message)> ReturnBookAsync(int rentId);
-    Task<bool> IsBookAvailableAsync(int bookId);
+    Task<(bool Success, string Message)> RentBookAsync(Guid bookId, Guid clientId);
+    Task<(bool Success, string Message)> ReturnBookAsync(Guid bookId);
+    Task<bool> IsBookAvailableAsync(Guid bookId);
     bool UpdateRentTime(BookRent? bookRent);
 }

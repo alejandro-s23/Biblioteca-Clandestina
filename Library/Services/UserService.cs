@@ -17,8 +17,7 @@ public class UserService(LibraryContext context) : IUserService
         }
 
         // 2. Mapeamento seletivo (apenas o que o usuário pode mudar) [cite: 2025-10-29]
-        existingClient.FirstName = updatedClient.FirstName;
-        existingClient.LastName = updatedClient.LastName;
+        
         existingClient.Email = updatedClient.Email;
         existingClient.Phone = updatedClient.Phone;
         existingClient.Address = updatedClient.Address;

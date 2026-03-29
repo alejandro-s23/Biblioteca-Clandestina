@@ -6,7 +6,7 @@ namespace Library.Services;
 
 public class RentalService(LibraryContext context) : IRentalService
 {
-    public async Task<(bool Success, string Message)> RentBookAsync(int bookId, Guid clientId)
+    public async Task<(bool Success, string Message)> RentBookAsync(Guid bookId, Guid clientId)
     {
         var book = await context.Books.FindAsync(bookId);
         var client = await context.Clients.FindAsync(clientId);
@@ -37,18 +37,17 @@ public class RentalService(LibraryContext context) : IRentalService
         // 3. O SEGREDO: Vinculamos o objeto, não o ID
         // Ao atribuir o objeto inteiro, o EF Core sincroniza os IDs automaticamente
         // após o SaveChangesAsync().
-        book.CurrentRent = newRent; 
+        book.CurrentRent = newRent;
         book.Avaliable = false;
 
         context.BookRents.Add(newRent);
-    
-        // 4. Salvando no banco de Jaguarão
+        // 4. Salvando no banco de Dados
         await context.SaveChangesAsync();
 
         return (true, "A posse foi selada e registrada.");
     }
 
-    public async Task<(bool Success, string Message)> ReturnBookAsync(int bookId)
+    public async Task<(bool Success, string Message)> ReturnBookAsync(Guid bookId)
     {
         var book = await context.Books
             .Include(b => b.CurrentRent)
@@ -68,7 +67,7 @@ public class RentalService(LibraryContext context) : IRentalService
         return (true, "O manuscrito retornou ao acervo.");
     }
 
-    public async Task<bool> IsBookAvailableAsync(int bookId)
+    public async Task<bool> IsBookAvailableAsync(Guid bookId)
     {
         return await context.Books.AnyAsync(b => b.Id == bookId && b.Avaliable);
     }
@@ -77,7 +76,7 @@ public class RentalService(LibraryContext context) : IRentalService
     {
         if (bookRent == null)
             return false;
-        bookRent.RentTimeDays = (bookRent.RentDate-DateTime.Now).Days;
+        bookRent.RentTimeDays = (DateTime.Now - bookRent.RentDate).Days;
         return true;
     }
 

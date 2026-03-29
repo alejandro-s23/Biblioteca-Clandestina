@@ -1,5 +1,6 @@
 // No topo do arquivo, use o método de extensão que criamos [cite: 2025-10-29]
 
+using System.Runtime.InteropServices.JavaScript;
 using Library.Data;
 using Library.Extensions;
 using Library.Models;
@@ -19,29 +20,41 @@ public class AccountController(LibraryContext context,IUserService userService, 
         var userId = User.GetUserId(); // Usando a extensão que criamos
         
         var user = await context.Clients.FindAsync(userId);
-        if (user == null) return NotFound();
+        if (user == null)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Client not found");
+            Console.ResetColor();
+            return RedirectToAction("Index", User.GetHomePage());
+        };
+        
+        var viewModel = new UserProfileViewModel
+        {
+            FullName = user.FirstName + " " + user.LastName,
+            Email = user.Email,
+            Registration = user.Registration,
+            Number = user.AddressNumber,
+            Address = user.Address,
+            District = user.District,
+            Phone = user.Phone,
+            HomePage = User.GetHomePage()
+        };
 
         // Busca o livro que o usuário está segurando
-        var activeBook = await context.Books.Include(book => book.CurrentRent)
-            .FirstOrDefaultAsync(b => b.CurrentRent != null && b.CurrentRent.ClientId == userId && b.CurrentRent.ReturnDate == null);
-        rentalService.UpdateRentTime(activeBook?.CurrentRent);
-        if (activeBook is { CurrentRent: not null })
+        var currentRent = await context.BookRents
+            .OrderByDescending(x => x.RentDate)
+            .Include(bookRent => bookRent.Book)
+            .FirstOrDefaultAsync(b => b.ClientId == userId && b.ReturnDate == null);
+        if (currentRent != null)
         {
-            var viewModel = new UserProfileViewModel
-            {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                Registration = user.Registration,
-                ActiveBook = activeBook,
-                RentTimeDays = activeBook.CurrentRent.RentTimeDays
-            };
-        
-
+            rentalService.UpdateRentTime(currentRent);
+            viewModel.ActiveBook = currentRent.Book;
+            viewModel.RentTimeDays = currentRent.RentTimeDays;
+            
             return View(viewModel);
         }
-
-        return View();
+        viewModel.ActiveBook = null;
+        return View(viewModel);
     }
 
     [HttpPost]
@@ -54,8 +67,6 @@ public class AccountController(LibraryContext context,IUserService userService, 
         var clientData = new Client
         {
             Id = User.GetUserId(), // Usando o seu método de extensão! [cite: 2025-10-29]
-            FirstName = model.FirstName,
-            LastName = model.LastName,
             Email = model.Email,
             Phone = model.Phone,
             Address = model.Address,
@@ -70,5 +81,19 @@ public class AccountController(LibraryContext context,IUserService userService, 
         return RedirectToAction("Index", $"{User.GetHomePage()}");
     }
     
-    
+    [HttpPost]
+    public async Task<IActionResult> Return(Guid bookId)
+    {
+        var userId = User.GetUserId();
+        var result = await rentalService.ReturnBookAsync(bookId);
+        if (result.Success)
+        {
+            TempData["MenssagemSucesso"] = result.Message;
+        }
+        else
+        {
+            TempData["MensagemErro"] = result.Message;
+        }
+        return RedirectToAction("Index");
+    }
 }
