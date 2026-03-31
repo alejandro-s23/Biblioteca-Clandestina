@@ -12,6 +12,7 @@ public class UserProfileViewModel
     // Dados de Leitura (Fixos)
     public string? FullName { get; set; }
     public string? Registration { get; set; }
+    public string? Cpf { get; set; }
     public string? HomePage { get; set; }
 
     // Informação do Aluguel Ativo

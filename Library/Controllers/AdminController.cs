@@ -1,20 +1,23 @@
 using Library.Data;
+using Library.Extensions;
 using Library.Models;
 using Library.Models.ViewModel;
+using Library.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Controllers;
 
-[Authorize] // Futuramente você filtrará por IsAdmin
-public class AdminController(LibraryContext context) : Controller
+[Authorize(Roles = "Admin")] // Futuramente você filtrará por IsAdmin
+public class AdminController(LibraryContext context, UserService userService) : Controller
 {
     private readonly LibraryContext _context = context;
     public async Task<IActionResult> Index()
     {
         var isAdminClaim = User.FindFirst("IsAdmin")?.Value;
-        if (isAdminClaim != "True")
+        var isAdmin = await userService.IsAdminAsync(User.GetUserId());
+        if (isAdminClaim != "True" && isAdmin)
             return RedirectToAction("Index", "Access");
         
         var viewModel = new AdminDashboardViewModel
@@ -75,7 +78,7 @@ public class AdminController(LibraryContext context) : Controller
         {
             _context.Books.Add(book);
             await _context.SaveChangesAsync();
-            TempData["MensagemSucesso"] = "Livro adicionado com sucesso!";
+            ViewBag.BookAddSucess = "Livro adicionado com sucesso!";
             return RedirectToAction("RegisterBook", "Admin");
         }
         

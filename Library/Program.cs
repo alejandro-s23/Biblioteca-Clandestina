@@ -1,6 +1,7 @@
 using Library.Data;
 using Library.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +28,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.AccessDeniedPath = "/Account/AccessDenied"; // Caminho caso não seja admin
         options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // Tempo do selo de validade
     });
+
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped<IRentalService, RentalService>();

@@ -20,6 +20,7 @@ public class UserService(LibraryContext context) : IUserService
         
         existingClient.Email = updatedClient.Email;
         existingClient.Phone = updatedClient.Phone;
+        existingClient.AddressNumber = updatedClient.AddressNumber;
         existingClient.Address = updatedClient.Address;
         existingClient.District = updatedClient.District;
 
@@ -35,6 +36,11 @@ public class UserService(LibraryContext context) : IUserService
             return (false, "Erro ao selar as novas informações no banco de dados.");
         }
     }
-    
+
+    public async Task<bool> IsAdminAsync(Guid id)
+    {
+        var admin = await context.Clients.Where(c => c.IsAdmin).AnyAsync(c => c.Id == id);
+        return admin;
+    }
     
 }

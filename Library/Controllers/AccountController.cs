@@ -33,6 +33,7 @@ public class AccountController(LibraryContext context,IUserService userService, 
             FullName = user.FirstName + " " + user.LastName,
             Email = user.Email,
             Registration = user.Registration,
+            Cpf = user.CPF,
             Number = user.AddressNumber,
             Address = user.Address,
             District = user.District,
@@ -70,7 +71,8 @@ public class AccountController(LibraryContext context,IUserService userService, 
             Email = model.Email,
             Phone = model.Phone,
             Address = model.Address,
-            District = model.District
+            District = model.District,
+            AddressNumber = model.Number
         };
 
         var result = await userService.UpdateProfileAsync(clientData);
@@ -94,6 +96,6 @@ public class AccountController(LibraryContext context,IUserService userService, 
         {
             TempData["MensagemErro"] = result.Message;
         }
-        return RedirectToAction("Index");
+        return RedirectToAction("Profile");
     }
 }

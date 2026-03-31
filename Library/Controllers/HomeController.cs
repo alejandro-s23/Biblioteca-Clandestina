@@ -26,7 +26,7 @@ public class HomeController(LibraryContext context, IRentalService rentalService
         
         var books = _context.Books.AsQueryable();
     
-        // Verificamos se o usuário logado tem aluguel ativo
+        // Verificando se o usuário logado tem aluguel ativo
         var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
         bool userHasBook = false;
 

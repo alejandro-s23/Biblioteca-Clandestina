@@ -76,7 +76,7 @@ public class RentalService(LibraryContext context) : IRentalService
     {
         if (bookRent == null)
             return false;
-        bookRent.RentTimeDays = (DateTime.Now - bookRent.RentDate).Days;
+        bookRent.RentTimeDays = (int)(Math.Ceiling(DateTime.Now.Date.Subtract(bookRent.RentDate.Date).TotalDays));
         return true;
     }
 

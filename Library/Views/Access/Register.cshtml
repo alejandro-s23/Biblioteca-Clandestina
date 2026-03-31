@@ -48,8 +48,8 @@
                     <input asp-for="AddressNumber" class="form-control input-manuscrito" value="S/N"/>
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">Complemento</label> 
-                    <input class="form-control input-manuscrito" placeholder="*Bloco 1, Apto 02*"/>
+                    <label asp-for="Complement" class="form-label">Complemento</label> 
+                    <input asp-for="Complement" class="form-control input-manuscrito" placeholder="*Bloco 1, Apto 02*"/>
                 </div>
                 <div class="col-md-5">
                     <label asp-for="Phone" class="form-label">Telefone (DDD)</label> 
@@ -69,7 +69,11 @@
                     <input asp-for="Registration" class="form-control input-manuscrito" />
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Chave de Acesso (Senha)</label> 
+                    <label asp-for="CPF" class="form-label">Cadastro de Pessoa Física (CPF)</label> 
+                    <input asp-for="CPF" class="form-control input-manuscrito" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Password" class="form-label">Chave de Acesso (Senha)</label> 
                     <input asp-for="Password" type="password" class="form-control input-manuscrito" />
                 </div>
             </div>

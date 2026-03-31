@@ -25,15 +25,20 @@ public class Client
     
     [Required] [MaxLength(10, ErrorMessage = "o número deve conter no máximo 10 dígitos")]
     public string? AddressNumber { get; set; }
+
+    [MaxLength(50, ErrorMessage = "O complemento deve conter no maximo 50 caracteres")]
+    public string? Complement { get; set; } = null;
     
-    [Required] [MaxLength(11, ErrorMessage = "Número inválido: Ex.: 53123456789")]
+    [Required] [MaxLength(11, ErrorMessage = "Número inválido: Ex.: 53912345678")]
     public string? Phone { get; set; }
     
-    [Required] [MaxLength(10, ErrorMessage = "A matrícula deve conter no máximo 10 caracteres")]
+    [Required] [MaxLength(15, ErrorMessage = "A matrícula deve conter no máximo 10 caracteres")]
     public string? Registration { get; set; }
     
     [Required] [MaxLength(50, ErrorMessage = "O email deve conter no maximo 50 caracteres")]
     public string? Email { get; set; }
+    [Required] [MaxLength(11, ErrorMessage = "CPF inválido: Ex.: 12345678901")]
+    public string? CPF { get; set; }
     
     [Required] [MaxLength(50, ErrorMessage = "A senha deve conter no máximo 50 caracteres")]
     public string? Password { get; set; }

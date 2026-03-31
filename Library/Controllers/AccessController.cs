@@ -46,7 +46,7 @@ public class AccessController(LibraryContext context) : Controller
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.FirstName ?? string.Empty),
-                new Claim("IsAdmin", user.IsAdmin.ToString())
+                new Claim(ClaimTypes.Role, user.IsAdmin ? "Admin" : "User")
             };
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             
