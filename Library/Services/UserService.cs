@@ -1,10 +1,12 @@
 using Library.Data;
+using Library.Data.Interfaces;
 using Library.Models;
+using Library.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Services;
 
-public class UserService(LibraryContext context) : IUserService
+public class UserService(LibraryContext context, IBookRepository bookRepository) : IUserService
 {
     public async Task<(bool Success, string Message)> UpdateProfileAsync(Client updatedClient)
     {
@@ -42,5 +44,9 @@ public class UserService(LibraryContext context) : IUserService
         var admin = await context.Clients.Where(c => c.IsAdmin).AnyAsync(c => c.Id == id);
         return admin;
     }
-    
+
+    public async Task<bool> HasRentedBookAsync(Guid userId)
+    {
+        return await bookRepository.AnyBookTenantAsync(userId); 
+    }
 }

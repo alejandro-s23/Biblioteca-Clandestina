@@ -5,48 +5,29 @@ using Library.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Library.Models;
 using Library.Services;
+using Library.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Library.Controllers;
 
-public class HomeController(LibraryContext context, IRentalService rentalService) : Controller
+public class HomeController(IRentalService rentalService, IUserService userService, IBookService bookService) : Controller
 {
     
-    private readonly LibraryContext _context = context;
-    private readonly IRentalService _rentalSv = rentalService;
-    
     [Authorize]
-    public async Task<IActionResult> Index(string searchString, string sortOrder, string sortDirection)
+    public async Task<IActionResult> Index(string searchString, string sortField, string sortOrder)
     {
         ViewBag.CurrentSearch = searchString;
-        ViewBag.CurrentSort = sortOrder;
-        ViewBag.CurrentDirection = sortDirection;
+        ViewBag.CurrentSortField = sortField;
+        ViewBag.CurrentOrder = sortOrder;
         
-        var books = _context.Books.AsQueryable();
     
         // Verificando se o usuário logado tem aluguel ativo
-        var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        bool userHasBook = false;
-
-        if (userIdString != null)
-        {
-            var userId = Guid.Parse(userIdString);
-            userHasBook = await _context.BookRents.AnyAsync(br => br.ClientId == userId && br.ReturnDate == null);
-        }
-
-        if (!string.IsNullOrEmpty(searchString))
-        {
-            books = books.Where(b => b.Title != null && b.Title.Contains(searchString));
-        }
+        var userId = User.GetUserId();
+        var userHasBook = await userService.HasRentedBookAsync(userId); 
+        var books = await bookService.GetFilteredBooks(searchString,sortOrder,sortField);
         
-        books = sortOrder switch
-        {
-            "Author" => sortDirection == "desc" ? books.OrderByDescending(b => b.Author) : books.OrderBy(b => b.Author),
-            "Available" => sortDirection == "desc" ? books.OrderByDescending(b => b.Avaliable) : books.OrderBy(b => b.Avaliable),
-            _ => sortDirection == "desc" ? books.OrderByDescending(b => b.Title) : books.OrderBy(b => b.Title),
-        };
 
         ViewBag.UserHasBook = userHasBook;
         return View(await books.ToListAsync());

@@ -1,5 +1,7 @@
 using Library.Data;
+using Library.Data.Interfaces;
 using Library.Services;
+using Library.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
@@ -24,13 +26,15 @@ builder.Services.AddSession(options =>
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Account/Login"; // Caminho para o portal de acesso
-        options.AccessDeniedPath = "/Account/AccessDenied"; // Caminho caso não seja admin
+        options.LoginPath = "/Access/Index"; // Caminho para o portal de acesso
+        options.AccessDeniedPath = "/Access/Index"; // Caminho caso não seja admin
         options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // Tempo do selo de validade
     });
+//Declarando os REPOSITORY
+builder.Services.AddScoped<IBookRepository, BookRepository>();
 
+//Declarando os SERVICES
 builder.Services.AddScoped<IUserService, UserService>();
-
 builder.Services.AddScoped<IRentalService, RentalService>();
 
 var app = builder.Build();
@@ -39,7 +43,6 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
