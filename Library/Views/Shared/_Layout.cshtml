@@ -20,7 +20,7 @@
             <a class="navbar-brand" asp-controller="@User.GetHomePage()" asp-action="Index">BIBLIOTECA CLANDESTINA</a>
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
-                    @if (User.FindFirst("IsAdmin")?.Value == "True")
+                    @if (User.IsInRole("Admin"))
                     {
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Admin" asp-action="Index">DASHBOARD</a>

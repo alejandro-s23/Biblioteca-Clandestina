@@ -4,8 +4,8 @@ namespace Library.Data.Interfaces;
 
 public interface IBookRepository : IBaseRepository<Book>
 {
-    IEnumerable<Book> GetRentedBooks();
-    IEnumerable<Book> GetAvailableBooks();
-    IEnumerable<Book> GetBooksByTitle(string searchTitle);
+    Task<IEnumerable<Book>> GetRentedBooks();
+    Task<IEnumerable<Book>> GetAvailableBooks();
+    Task<IEnumerable<Book>> GetBooksByTitle(string searchTitle);
     Task<bool> AnyBookTenantAsync(Guid clientId);
 }

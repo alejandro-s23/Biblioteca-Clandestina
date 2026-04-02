@@ -17,9 +17,9 @@ public class AccessController(LibraryContext context) : Controller
     {
         if (User.Identity is { IsAuthenticated: true })
         {
-            if(User.FindFirst("IsAdmin")?.Value == "True")
+            if(User.IsInRole("Admin"))
                 return RedirectToAction("Index", "Admin");
-            if(User.FindFirst("IsAdmin")?.Value == "False")
+            if(User.IsInRole("User"))
                 return RedirectToAction("Index", "Home");
         }
         return View();   

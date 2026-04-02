@@ -25,17 +25,17 @@
                 </div>
 
                 <div class="col-6">
-                    <select name="sortOrder" class="form-select form-select-sm input-manuscrito">
-                        <option value="Title" selected="@(ViewBag.CurrentSort == "Title")">Título</option>
-                        <option value="Author" selected="@(ViewBag.CurrentSort == "Author")">Autor</option>
-                        <option value="Available" selected="@(ViewBag.CurrentSort == "Avaliable")">Status</option>
+                    <select name="sortSortField" class="form-select form-select-sm input-manuscrito">
+                        <option value="Title" selected="@(ViewBag.CurrentSortField == "Title")">Título</option>
+                        <option value="Author" selected="@(ViewBag.CurrentSortField == "Author")">Autor</option>
+                        <option value="Available" selected="@(ViewBag.CurrentSortField == "Available")">Status</option>
                     </select>
                 </div>
 
                 <div class="col-6">
-                    <select name="sortDirection" class="form-select form-select-sm input-manuscrito">
-                        <option value="asc" selected="@(ViewBag.CurrentDirection == "asc")">A-Z ↑</option>
-                        <option value="desc" selected="@(ViewBag.CurrentDirection == "desc")">Z-A ↓</option>
+                    <select name="sortOrder" class="form-select form-select-sm input-manuscrito">
+                        <option value="asc" selected="@(ViewBag.CurrentOrder == "asc")">A-Z ↑</option>
+                        <option value="desc" selected="@(ViewBag.CurrentOrder == "desc")">Z-A ↓</option>
                     </select>
                 </div>
 

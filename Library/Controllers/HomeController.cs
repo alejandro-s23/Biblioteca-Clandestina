@@ -25,12 +25,15 @@ public class HomeController(IRentalService rentalService, IUserService userServi
     
         // Verificando se o usuário logado tem aluguel ativo
         var userId = User.GetUserId();
-        var userHasBook = await userService.HasRentedBookAsync(userId); 
-        var books = await bookService.GetFilteredBooks(searchString,sortOrder,sortField);
+        var userHasBook = await userService.HasRentedBookAsync(userId);
         
-
+        //Filtra os livros
+        var books = await bookService.GetOrderedBooks(searchString, sortOrder, sortField);
+        
+        //Dizendo para o programa esperar a resposta de userHasBook para continuar
         ViewBag.UserHasBook = userHasBook;
-        return View(await books.ToListAsync());
+        
+        return View(books);
     }
 
     public IActionResult Privacy()
@@ -47,26 +50,15 @@ public class HomeController(IRentalService rentalService, IUserService userServi
     [HttpPost]
     public async Task<IActionResult> Reserve(Guid bookId)
     {
-        var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        
-        if (userIdString != null)
+        var userId = User.GetUserId();
+        var result = await rentalService.RentBookAsync(bookId, userId);
+        if (result.Success)
         {
-            
-            Guid userId = Guid.Parse(userIdString);
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("GUID: "  + userId.ToString());
-            Console.ResetColor();
-            var result = await _rentalSv.RentBookAsync(bookId, userId);
-            if (result.Success)
-            {
-                TempData["MensagemSucesso"] = result.Message;
-            }
-            else
-            {
-                TempData["MensagemErro"] = result.Message;
-            
-            }
-            
+            TempData["MensagemSucesso"] = result.Message;
+        }
+        else
+        {
+            TempData["MensagemErro"] = result.Message;
         }
 
         return RedirectToAction("Index");

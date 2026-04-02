@@ -4,50 +4,29 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Library.Data;
 
-public class BookRepository(LibraryContext context) : IBookRepository
+public class BookRepository(LibraryContext context) : BaseRepository<Book>(context),IBookRepository
 {
-    public Task<T?> GetByIdAsync<T>(Guid id) where T : class
+    private readonly LibraryContext _context = context;
+
+    public async Task<IEnumerable<Book>> GetRentedBooks()
     {
-        throw new NotImplementedException();
+        return await _context.Books.Where(b => !b.Avaliable).ToListAsync();
     }
 
-    public Task<List<Book>> GetAllAsync<Book>()
+    public async Task<IEnumerable<Book>> GetAvailableBooks()
     {
-        throw new NotImplementedException();
+        return await _context.Books.Where(b => b.Avaliable).ToListAsync();
     }
 
-    public Task<bool> Delete(Book entity)
+    public async Task<IEnumerable<Book>> GetBooksByTitle(string searchTitle)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> Add(Book entity)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> Update(Book entity)
-    {
-        throw new NotImplementedException();
-    }
-
-    public IEnumerable<Book> GetRentedBooks()
-    {
-        return context.Books.Where(b => !b.Avaliable).AsEnumerable();
-    }
-
-    public IEnumerable<Book> GetAvailableBooks()
-    {
-        throw new NotImplementedException();
-    }
-
-    public IEnumerable<Book> GetBooksByTitle(string searchTitle)
-    {
-        throw new NotImplementedException();
+        return await _context.Books
+            .Where(b => b.Title != null && b.Title.ToLower().Contains(searchTitle.ToLower()))
+            .ToListAsync();
     }
 
     public async Task<bool> AnyBookTenantAsync(Guid clientId)
     {
-        return await context.Books.AnyAsync(b => b.CurrentRent != null && b.CurrentRent.ClientId == clientId);
+        return await _context.Books.AnyAsync(b => b.CurrentRent != null && b.CurrentRent.ClientId == clientId);
     }
 }

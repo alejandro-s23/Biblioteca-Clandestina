@@ -39,12 +39,6 @@ public class UserService(LibraryContext context, IBookRepository bookRepository)
         }
     }
 
-    public async Task<bool> IsAdminAsync(Guid id)
-    {
-        var admin = await context.Clients.Where(c => c.IsAdmin).AnyAsync(c => c.Id == id);
-        return admin;
-    }
-
     public async Task<bool> HasRentedBookAsync(Guid userId)
     {
         return await bookRepository.AnyBookTenantAsync(userId); 

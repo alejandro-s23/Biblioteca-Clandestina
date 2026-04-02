@@ -35,6 +35,7 @@ builder.Services.AddScoped<IBookRepository, BookRepository>();
 
 //Declarando os SERVICES
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IRentalService, RentalService>();
 
 var app = builder.Build();

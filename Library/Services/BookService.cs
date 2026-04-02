@@ -6,16 +6,16 @@ namespace Library.Services;
 
 public class BookService (IBookRepository bookRepository): IBookService
 {
-    public IEnumerable<Book> GetOrderedBooks(string searchString,string sortOrder, string sortField)
+    public async Task<IEnumerable<Book>> GetOrderedBooks(string searchString,string sortOrder, string sortField)
     {
         IEnumerable<Book> books;
-        if (string.IsNullOrWhiteSpace(searchString))
+        if (!string.IsNullOrWhiteSpace(searchString))
         {
-            books = bookRepository.GetBooksByTitle(searchString);
+            books = await bookRepository.GetBooksByTitle(searchString);
         }
         else
         {
-            books = bookRepository.GetA
+            books = await bookRepository.GetAllAsync();
         }
         books = sortField switch
         {

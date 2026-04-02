@@ -16,8 +16,7 @@ public class AdminController(LibraryContext context, IUserService userService) :
     private readonly LibraryContext _context = context;
     public async Task<IActionResult> Index()
     {
-        var isAdmin = await userService.IsAdminAsync(User.GetUserId());
-        if (!isAdmin && !User.IsInRole("Admin"))
+        if (!User.IsInRole("Admin"))
             return RedirectToAction("Index", "Access");
         
         var viewModel = new AdminDashboardViewModel
