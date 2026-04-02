@@ -10,14 +10,13 @@ using Microsoft.EntityFrameworkCore;
 namespace Library.Controllers;
 
 [Authorize(Roles = "Admin")] // Futuramente você filtrará por IsAdmin
-public class AdminController(LibraryContext context, UserService userService) : Controller
+public class AdminController(LibraryContext context, IUserService userService) : Controller
 {
     private readonly LibraryContext _context = context;
     public async Task<IActionResult> Index()
     {
-        var isAdminClaim = User.FindFirst("IsAdmin")?.Value;
         var isAdmin = await userService.IsAdminAsync(User.GetUserId());
-        if (isAdminClaim != "True" && isAdmin)
+        if (!isAdmin)
             return RedirectToAction("Index", "Access");
         
         var viewModel = new AdminDashboardViewModel
