@@ -73,7 +73,7 @@
             @foreach (var rent in Model.ActiveRents) {
                 <tr>
                     <td>@rent.Book?.Title</td>
-                    <td>@rent.Client?.FirstName</td>
+                    <td>@rent.User?.FirstName</td>
                     <td>@rent.RentDate.ToString("dd/MM/yyyy")</td>
                 </tr>
             }

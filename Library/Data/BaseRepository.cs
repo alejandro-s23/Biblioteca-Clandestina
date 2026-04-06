@@ -5,14 +5,19 @@ namespace Library.Data;
 
 public abstract class BaseRepository<T>(LibraryContext context) : IBaseRepository<T> where T : class
 {
-    private DbSet<T> DbSet => context.Set<T>();
+    protected DbSet<T> DbSet => context.Set<T>();
     
     public async Task<T?> GetByIdAsync(Guid id)
     {
         return await DbSet.FindAsync(id);
     }
 
-    public async Task<List<T>> GetAllAsync()
+    public async Task<bool> ExistsAsync(Guid id)
+    {
+        return await DbSet.FindAsync(id) != null;
+    }
+
+    public async Task<IEnumerable<T>> GetAllAsync()
     {
         return await DbSet.ToListAsync();
     }
@@ -60,5 +65,10 @@ public abstract class BaseRepository<T>(LibraryContext context) : IBaseRepositor
             Console.WriteLine(e);
             return false;
         }
+    }
+
+    public async Task<int> CountAsync()
+    {
+        return await DbSet.CountAsync();
     }
 }

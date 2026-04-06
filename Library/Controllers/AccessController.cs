@@ -1,16 +1,14 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Library.Data;
 using Library.Models;
 using Library.Models.ViewModel;
-using Library.Services;
+using Library.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Library.Controllers;
 
-public class AccessController(LibraryContext context) : Controller
+public class AccessController(IUserService userService) : Controller
 {
     [HttpGet]
     public IActionResult Index()
@@ -32,9 +30,7 @@ public class AccessController(LibraryContext context) : Controller
         if (!ModelState.IsValid) {return View(model);}
 
         // Busca o cliente nos registros
-        var user = await context.Clients
-            .FirstOrDefaultAsync(c => c.Email == model.Email && c.Password == model.Password);
-
+        var user = await userService.GetUserAsync(model.Email, model.Password);
         if (user != null)
         {
             if (!user.IsApproved)
@@ -52,7 +48,8 @@ public class AccessController(LibraryContext context) : Controller
             
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, 
                 new ClaimsPrincipal(claimsIdentity));
-            if(user.IsAdmin) return RedirectToAction("Index", "Admin");
+            if(user.IsAdmin) 
+                return RedirectToAction("Index", "Admin");
             
             return RedirectToAction("Index","Home");
         }
@@ -69,14 +66,13 @@ public class AccessController(LibraryContext context) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Register(Client client)
+    public async Task<IActionResult> Register(User client)
     {
         if (ModelState.IsValid)
         {
             // O GUID e os booleanos padrão já estão definidos no seu Model 
-            context.Add(client);
-            await context.SaveChangesAsync();
-            return RedirectToAction("Pending", "Access");
+            if(await userService.RegisterAsync(client))
+                return RedirectToAction("Pending", "Access");
         }
         return View(client);
     }

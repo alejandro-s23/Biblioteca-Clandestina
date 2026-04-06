@@ -8,17 +8,17 @@ public class BookRepository(LibraryContext context) : BaseRepository<Book>(conte
 {
     private readonly LibraryContext _context = context;
 
-    public async Task<IEnumerable<Book>> GetRentedBooks()
+    public async Task<IEnumerable<Book>> GetRentedBooksAsync()
     {
         return await _context.Books.Where(b => !b.Avaliable).ToListAsync();
     }
 
-    public async Task<IEnumerable<Book>> GetAvailableBooks()
+    public async Task<IEnumerable<Book>> GetAvailableBooksAsync()
     {
         return await _context.Books.Where(b => b.Avaliable).ToListAsync();
     }
 
-    public async Task<IEnumerable<Book>> GetBooksByTitle(string searchTitle)
+    public async Task<IEnumerable<Book>> GetBooksByTitleAsync(string searchTitle)
     {
         return await _context.Books
             .Where(b => b.Title != null && b.Title.ToLower().Contains(searchTitle.ToLower()))
@@ -28,5 +28,14 @@ public class BookRepository(LibraryContext context) : BaseRepository<Book>(conte
     public async Task<bool> AnyBookTenantAsync(Guid clientId)
     {
         return await _context.Books.AnyAsync(b => b.CurrentRent != null && b.CurrentRent.ClientId == clientId);
+    }
+
+    public async Task<IEnumerable<string?>> GetExistingAuthorsAsync()
+    {
+        return await _context.Books
+            .Select(b => b.Author)
+            .Distinct()
+            .OrderBy(a => a)
+            .ToListAsync();
     }
 }

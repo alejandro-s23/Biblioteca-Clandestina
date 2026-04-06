@@ -3,12 +3,26 @@ namespace Library.Models.ViewModel;
 public class AdminDashboardViewModel
 {
     // Resumo de Aluguéis
-    public List<BookRent> ActiveRents { get; set; } = new();
-    public int TotalActiveRents => ActiveRents.Count;
+    public IEnumerable<BookRent>? ActiveRents { get; set; }
+    public int TotalActiveRents
+    {
+        get
+        {
+            if (ActiveRents != null) return ActiveRents.Count();
+            return 0;
+        }
+    }
 
     // Resumo de Solicitações
-    public List<Client> PendingRequests { get; set; } = new();
-    public int TotalPendingRequests => PendingRequests.Count;
+    public List<User>? PendingRequests { get; set; }
+    public int TotalPendingRequests
+    {
+        get
+        {
+            if (PendingRequests != null) return PendingRequests.Count();
+            return 0;
+        }
+    }
 
     // Métrica Relevante: Acervo e Disponibilidade
     public int TotalBooks { get; set; }

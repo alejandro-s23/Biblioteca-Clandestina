@@ -8,4 +8,5 @@ public interface IRentalService
     Task<(bool Success, string Message)> ReturnBookAsync(Guid bookId);
     Task<bool> IsBookAvailableAsync(Guid bookId);
     bool UpdateRentTime(BookRent? bookRent);
+    Task<IEnumerable<BookRent>> GetActiveRents(int size);
 }

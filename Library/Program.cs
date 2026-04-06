@@ -32,6 +32,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 //Declarando os REPOSITORY
 builder.Services.AddScoped<IBookRepository, BookRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 //Declarando os SERVICES
 builder.Services.AddScoped<IUserService, UserService>();

@@ -1,19 +1,14 @@
-using Library.Data;
-using Library.Extensions;
 using Library.Models;
 using Library.Models.ViewModel;
-using Library.Services;
 using Library.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Library.Controllers;
 
-[Authorize(Roles = "Admin")] // Futuramente você filtrará por IsAdmin
-public class AdminController(LibraryContext context, IUserService userService) : Controller
+[Authorize(Roles = "Admin")]
+public class AdminController(IUserService userService, IRentalService rentalService, IBookService bookService) : Controller
 {
-    private readonly LibraryContext _context = context;
     public async Task<IActionResult> Index()
     {
         if (!User.IsInRole("Admin"))
@@ -22,23 +17,14 @@ public class AdminController(LibraryContext context, IUserService userService) :
         var viewModel = new AdminDashboardViewModel
         {
             // Busca solicitações pendentes
-            PendingRequests = await _context.Clients
-                .Where(c => !c.IsApproved)
-                .OrderBy(c => c.FirstName)
-                .Take(5)
-                .ToListAsync(),
+            PendingRequests = await userService.GetUsersAsync(),
 
             // Busca aluguéis sem data de retorno
-            ActiveRents = await _context.BookRents
-                .Include(br => br.Book)
-                .Include(br => br.Client)
-                .Where(br => br.ReturnDate == null)
-                .Take(5)
-                .ToListAsync(),
+            ActiveRents = await rentalService.GetActiveRents(5),
 
             // Métrica de Inventário
-            TotalBooks = await _context.Books.CountAsync(),
-            AvailableBooks = await _context.Books.CountAsync(b => b.Avaliable)
+            TotalBooks = await bookService.CountAsync(),
+            AvailableBooks = await bookService.CountAvailableAsync()
         };
 
         return View(viewModel);
@@ -46,26 +32,14 @@ public class AdminController(LibraryContext context, IUserService userService) :
 
     public async Task<IActionResult> Approve(Guid id)
     {
-        var client = await _context.Clients.FindAsync(id);
-        if (client != null)
-        {
-            client?.IsApproved = true;
-            await _context.SaveChangesAsync();
-        }
-
+        await userService.ApproveUser(id);
         return RedirectToAction("Index","Admin");
     }
-
+    
     [HttpGet]
     public async Task<IActionResult> RegisterBook()
     {
-        var existingAuthors = await _context.Books
-            .Select(b => b.Author)
-            .Distinct()
-            .OrderBy(a => a)
-            .ToListAsync();
-
-        ViewBag.Authors = existingAuthors;
+        ViewBag.Authors = await bookService.GetAuthorsAsync();
         return View();
     }
 
@@ -73,21 +47,13 @@ public class AdminController(LibraryContext context, IUserService userService) :
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RegisterBook(Book book)
     {
-        if (ModelState.IsValid)
+        if (ModelState.IsValid && await bookService.AddBookAsync(book))
         {
-            _context.Books.Add(book);
-            await _context.SaveChangesAsync();
             ViewBag.BookAddSucess = "Livro adicionado com sucesso!";
             return RedirectToAction("RegisterBook", "Admin");
         }
-        
         // SE CHEGOU AQUI, O MODEL ESTÁ INVÁLIDO. 
-        // PRECISAMOS REABASTECER A LISTA DE AUTORES! [cite: 2025-10-29]
-        ViewBag.Authors = await _context.Books
-            .Select(b => b.Author)
-            .Distinct()
-            .OrderBy(a => a)
-            .ToListAsync();
+        ViewBag.Authors = bookService.GetAuthorsAsync();
         
         return View(book);
     }

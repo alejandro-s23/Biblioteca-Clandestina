@@ -6,12 +6,12 @@ namespace Library.Services;
 
 public class BookService (IBookRepository bookRepository): IBookService
 {
-    public async Task<IEnumerable<Book>> GetOrderedBooks(string searchString,string sortOrder, string sortField)
+    public async Task<IEnumerable<Book>> GetOrderedBooksAsync(string searchString,string sortOrder, string sortField)
     {
         IEnumerable<Book> books;
         if (!string.IsNullOrWhiteSpace(searchString))
         {
-            books = await bookRepository.GetBooksByTitle(searchString);
+            books = await bookRepository.GetBooksByTitleAsync(searchString);
         }
         else
         {
@@ -24,5 +24,31 @@ public class BookService (IBookRepository bookRepository): IBookService
             _ => sortOrder == "desc" ? books.OrderByDescending(b => b.Title) : books.OrderBy(b => b.Title),
         };
         return books;
+    }
+
+    public async Task<int> CountAvailableAsync()
+    {
+        var available =  await bookRepository.GetAvailableBooksAsync();
+        return available.Count();
+    }
+
+    public async Task<int> CountAsync()
+    {
+        return await bookRepository.CountAsync();
+    }
+
+    public async Task<IEnumerable<string?>> GetAuthorsAsync()
+    {
+        return await bookRepository.GetExistingAuthorsAsync();
+    }
+
+    public async Task<bool> AddBookAsync(Book book)
+    {
+        if (await bookRepository.Add(book))
+        {
+            return true;
+        }
+
+        return false;
     }
 }

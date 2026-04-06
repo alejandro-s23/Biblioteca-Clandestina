@@ -4,6 +4,10 @@ namespace Library.Services.Interfaces;
 
 public interface IUserService
 {
-    Task<(bool Success, string Message)> UpdateProfileAsync(Client client);
+    Task<(bool Success, string Message)> UpdateProfileAsync(User client);
     Task<bool> HasRentedBookAsync(Guid userId);
+    Task<User?> GetUserAsync(string email, string password);
+    Task<bool> RegisterAsync(User client);
+    Task<List<User>> GetUsersAsync(int size = 5);
+    Task<bool> ApproveUser(Guid userId);
 }

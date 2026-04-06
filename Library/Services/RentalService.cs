@@ -1,16 +1,17 @@
 using Library.Data;
+using Library.Data.Interfaces;
 using Library.Models;
 using Library.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Services;
 
-public class RentalService(LibraryContext context) : IRentalService
+public class RentalService(LibraryContext context,IBookRentRepository rentRepository) : IRentalService
 {
     public async Task<(bool Success, string Message)> RentBookAsync(Guid bookId, Guid clientId)
     {
         var book = await context.Books.FindAsync(bookId);
-        var client = await context.Clients.FindAsync(clientId);
+        var client = await context.Users.FindAsync(clientId);
         
         var hasActiveRent = await context.BookRents
             .AnyAsync(br => br.ClientId == clientId && br.ReturnDate == null);
@@ -35,9 +36,7 @@ public class RentalService(LibraryContext context) : IRentalService
             RentDate = DateTime.Now
         };
 
-        // 3. O SEGREDO: Vinculamos o objeto, não o ID
         // Ao atribuir o objeto inteiro, o EF Core sincroniza os IDs automaticamente
-        // após o SaveChangesAsync().
         book.CurrentRent = newRent;
         book.Avaliable = false;
 
@@ -81,5 +80,8 @@ public class RentalService(LibraryContext context) : IRentalService
         return true;
     }
 
-    
+    public async Task<IEnumerable<BookRent>> GetActiveRents(int size = 5)
+    {
+        return await rentRepository.GetActiveRents(size);
+    }
 }

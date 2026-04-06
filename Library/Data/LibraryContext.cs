@@ -11,7 +11,7 @@ namespace Library.Data
 
         // Seus "Registros" (Tabelas)
         public DbSet<Book> Books { get; set; }
-        public DbSet<Client> Clients { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<BookRent> BookRents { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

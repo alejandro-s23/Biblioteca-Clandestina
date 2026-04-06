@@ -1,15 +1,9 @@
 using System.Diagnostics;
-using System.Security.Claims;
-using Library.Data;
 using Library.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Library.Models;
-using Library.Services;
 using Library.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-
 namespace Library.Controllers;
 
 public class HomeController(IRentalService rentalService, IUserService userService, IBookService bookService) : Controller
@@ -28,7 +22,7 @@ public class HomeController(IRentalService rentalService, IUserService userServi
         var userHasBook = await userService.HasRentedBookAsync(userId);
         
         //Filtra os livros
-        var books = await bookService.GetOrderedBooks(searchString, sortOrder, sortField);
+        var books = await bookService.GetOrderedBooksAsync(searchString, sortOrder, sortField);
         
         //Dizendo para o programa esperar a resposta de userHasBook para continuar
         ViewBag.UserHasBook = userHasBook;

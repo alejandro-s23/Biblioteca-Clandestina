@@ -20,7 +20,7 @@ public class AccountController(LibraryContext context,IUserService userService, 
     {
         var userId = User.GetUserId(); // Usando a extensão que criamos
         
-        var user = await context.Clients.FindAsync(userId);
+        var user = await context.Users.FindAsync(userId);
         if (user == null)
         {
             Console.ForegroundColor = ConsoleColor.Red;
@@ -66,7 +66,7 @@ public class AccountController(LibraryContext context,IUserService userService, 
         if (!ModelState.IsValid) return View("Profile", model);
 
         // Criamos um objeto temporário para o transporte dos dados [cite: 2025-10-29]
-        var clientData = new Client
+        var clientData = new User
         {
             Id = User.GetUserId(), // Usando o seu método de extensão! [cite: 2025-10-29]
             Email = model.Email,
