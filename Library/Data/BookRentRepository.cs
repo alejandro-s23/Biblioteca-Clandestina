@@ -6,7 +6,13 @@ namespace Library.Data;
 
 public class BookRentRepository(LibraryContext context) : BaseRepository<BookRent>(context), IBookRentRepository
 {
-    
+    public override async Task<BookRent?> GetByIdAsync(Guid id)
+    {
+        return DbSet
+            .Include(bookRent => bookRent.Book)
+            .FirstOrDefault(b => b.Id == id);
+    }
+
     public async Task<IEnumerable<BookRent>> GetActiveRents(int size)
     {
         return await DbSet
@@ -15,5 +21,13 @@ public class BookRentRepository(LibraryContext context) : BaseRepository<BookRen
             .Where( r => r.ReturnDate == null)
             .Take(size)
             .ToListAsync();
+    }
+
+    public async Task<BookRent?> GetActiveRentAsync(Guid userId)
+    {
+        return await DbSet
+            .OrderByDescending(x => x.RentDate)
+            .Include(bookRent => bookRent.Book)
+            .FirstOrDefaultAsync(b => b.UserId == userId && b.ReturnDate == null);
     }
 }

@@ -8,4 +8,5 @@ public interface IBaseRepository<T> where T : class
     Task<bool> Add(T entity);
     Task<bool> Update(T entity);
     Task<int> CountAsync();
+    Task<bool> SaveAsync();
 }

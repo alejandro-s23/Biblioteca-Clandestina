@@ -27,7 +27,7 @@
                         </li>
                     }
                     @await RenderSectionAsync("NavItems", required: false)
-                    @if (User.Identity is { IsAuthenticated: true })
+                    @if (User.Identity is { IsAuthenticated: true } && ViewContext.RouteData.Values["action"]?.ToString() != "Profile")
                     {
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Account" asp-action="Profile">MINHA CONTA</a>

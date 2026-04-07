@@ -57,4 +57,10 @@ public class AdminController(IUserService userService, IRentalService rentalServ
         
         return View(book);
     }
+    
+    [HttpGet]
+    public IActionResult Users()
+    {
+        return View("Relatorios/Users");
+    }
 }

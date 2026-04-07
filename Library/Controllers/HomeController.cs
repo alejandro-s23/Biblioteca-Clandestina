@@ -57,6 +57,5 @@ public class HomeController(IRentalService rentalService, IUserService userServi
 
         return RedirectToAction("Index");
     }
-
     
 }

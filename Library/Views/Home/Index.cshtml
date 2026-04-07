@@ -25,10 +25,11 @@
                 </div>
 
                 <div class="col-6">
-                    <select name="sortSortField" class="form-select form-select-sm input-manuscrito">
+                    <select name="sortField" class="form-select form-select-sm input-manuscrito">
                         <option value="Title" selected="@(ViewBag.CurrentSortField == "Title")">Título</option>
                         <option value="Author" selected="@(ViewBag.CurrentSortField == "Author")">Autor</option>
                         <option value="Available" selected="@(ViewBag.CurrentSortField == "Available")">Status</option>
+                        <option value="Recent" selected="@(ViewBag.CurrentSortField == "Recent")">Data de Inclusão</option>
                     </select>
                 </div>
 

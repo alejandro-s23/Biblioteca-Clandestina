@@ -1,0 +1,50 @@
+@{
+    Layout = "_Layout";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="titulo-manuscrito mb-0">ACERVO</h4>
+        <button class="btn btn-manuscrito btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosBiblioteca">
+            <i class="bi bi-filter" id="filter"></i> FILTROS
+        </button>
+    </div>
+
+    <div class="collapse mb-4" id="filtrosBiblioteca">
+        <div class="card card-manuscrito p-3 shadow-sm border-clandestino">
+            <form asp-action="Index" method="get" class="row g-2">
+                
+                <div class="col-12">
+                    <div class="form-floating mb-2">
+                        <input type="text" name="searchString" value="@ViewBag.CurrentSearch" 
+                               class="form-control input-manuscrito" id="searchInp" placeholder="Buscar...">
+                        <label for="searchInp" class="fonte-manuscrito">Buscar Usuário</label>
+                    </div>
+                </div>
+
+                <div class="col-6">
+                    <select name="sortSortField" class="form-select form-select-sm input-manuscrito">
+                        <option value="Title" selected="@(ViewBag.CurrentSortField == "Title")">Título</option>
+                        <option value="Author" selected="@(ViewBag.CurrentSortField == "Author")">Autor</option>
+                        <option value="Available" selected="@(ViewBag.CurrentSortField == "Available")">Status</option>
+                    </select>
+                </div>
+
+                <div class="col-6">
+                    <select name="sortOrder" class="form-select form-select-sm input-manuscrito">
+                        <option value="asc" selected="@(ViewBag.CurrentOrder == "asc")">A-Z ↑</option>
+                        <option value="desc" selected="@(ViewBag.CurrentOrder == "desc")">Z-A ↓</option>
+                    </select>
+                </div>
+
+                <div class="col-12 d-flex gap-2 mt-2">
+                    <button type="submit" class="btn btn-manuscrito btn-sm flex-grow-1">APLICAR</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">LIMPAR</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="card-manuscrito">
+    
+    </div>
+</div>

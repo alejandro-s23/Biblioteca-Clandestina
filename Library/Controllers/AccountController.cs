@@ -4,23 +4,23 @@ using System.Runtime.InteropServices.JavaScript;
 using Library.Data;
 using Library.Extensions;
 using Library.Models;
+using Library.Models.Enums;
 using Library.Models.ViewModel;
-using Library.Services;
+using Library.Models.ViewModel.DTO;
 using Library.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Library.Controllers;
 
-public class AccountController(LibraryContext context,IUserService userService, IRentalService rentalService) : Controller
+public class AccountController(IUserService userService, IRentalService rentalService, IRequestService requestService) : Controller
 {
     
     public async Task<IActionResult> Profile()
     {
         var userId = User.GetUserId(); // Usando a extensão que criamos
         
-        var user = await context.Users.FindAsync(userId);
+        var user = await userService.GetUserByIdAsync(userId);
         if (user == null)
         {
             Console.ForegroundColor = ConsoleColor.Red;
@@ -43,10 +43,7 @@ public class AccountController(LibraryContext context,IUserService userService, 
         };
 
         // Busca o livro que o usuário está segurando
-        var currentRent = await context.BookRents
-            .OrderByDescending(x => x.RentDate)
-            .Include(bookRent => bookRent.Book)
-            .FirstOrDefaultAsync(b => b.ClientId == userId && b.ReturnDate == null);
+        var currentRent = await rentalService.GetActiveRentAsync(userId);
         if (currentRent != null)
         {
             rentalService.UpdateRentTime(currentRent);
@@ -65,10 +62,10 @@ public class AccountController(LibraryContext context,IUserService userService, 
     {
         if (!ModelState.IsValid) return View("Profile", model);
 
-        // Criamos um objeto temporário para o transporte dos dados [cite: 2025-10-29]
+        // Criamos um objeto temporário para o transporte dos dados
         var clientData = new User
         {
-            Id = User.GetUserId(), // Usando o seu método de extensão! [cite: 2025-10-29]
+            Id = User.GetUserId(),
             Email = model.Email,
             Phone = model.Phone,
             Address = model.Address,
@@ -87,16 +84,26 @@ public class AccountController(LibraryContext context,IUserService userService, 
     [HttpPost]
     public async Task<IActionResult> Return(Guid bookId)
     {
-        var userId = User.GetUserId();
-        var result = await rentalService.ReturnBookAsync(bookId);
-        if (result.Success)
+        var activeRent = await rentalService.GetActiveRentAsync(User.GetUserId());
+        if (activeRent != null)
         {
-            TempData["MenssagemSucesso"] = result.Message;
+            //Criando o dictionary para o body da minha request de devolucao
+            var requestBody = new ReturnsRequestBody()
+            {
+                BookId = bookId,
+                RentDate =  activeRent.RentDate,
+                RentId = activeRent.Id,
+            };
+            if (!await requestService.CreateRequestAsync(User.GetUserId(), requestBody))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Request failed");
+                Console.ResetColor();
+                return RedirectToAction("Index", User.GetHomePage());
+
+            }
         }
-        else
-        {
-            TempData["MensagemErro"] = result.Message;
-        }
+        
         return RedirectToAction("Profile");
     }
 }

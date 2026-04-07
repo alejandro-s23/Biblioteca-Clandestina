@@ -8,6 +8,13 @@ public class BookRepository(LibraryContext context) : BaseRepository<Book>(conte
 {
     private readonly LibraryContext _context = context;
 
+    public override async Task<Book?> GetByIdAsync(Guid id)
+    {
+        return await DbSet
+            .Include(b => b.CurrentRent)
+            .FirstOrDefaultAsync(b => b.Id == id);
+    }
+
     public async Task<IEnumerable<Book>> GetRentedBooksAsync()
     {
         return await _context.Books.Where(b => !b.Avaliable).ToListAsync();
@@ -27,7 +34,7 @@ public class BookRepository(LibraryContext context) : BaseRepository<Book>(conte
 
     public async Task<bool> AnyBookTenantAsync(Guid clientId)
     {
-        return await _context.Books.AnyAsync(b => b.CurrentRent != null && b.CurrentRent.ClientId == clientId);
+        return await _context.Books.AnyAsync(b => b.CurrentRent != null && b.CurrentRent.UserId == clientId);
     }
 
     public async Task<IEnumerable<string?>> GetExistingAuthorsAsync()

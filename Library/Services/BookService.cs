@@ -20,7 +20,8 @@ public class BookService (IBookRepository bookRepository): IBookService
         books = sortField switch
         {
             "Author" => sortOrder == "desc" ? books.OrderByDescending(b => b.Author) : books.OrderBy(b => b.Author),
-            "Available" => sortOrder == "desc" ? books.OrderByDescending(b => b.Avaliable) : books.OrderBy(b => b.Avaliable),
+            "Available" => sortOrder == "desc" ? books.OrderByDescending(b => !b.Avaliable) : books.OrderBy(b => !b.Avaliable),
+            "Recent" => sortOrder == "desc" ? books.OrderByDescending(b => b.Added).Reverse() : books.OrderBy(b => b.Added).Reverse(),
             _ => sortOrder == "desc" ? books.OrderByDescending(b => b.Title) : books.OrderBy(b => b.Title),
         };
         return books;

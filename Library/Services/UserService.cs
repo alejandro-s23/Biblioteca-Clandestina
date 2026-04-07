@@ -50,6 +50,11 @@ public class UserService(IBookRepository bookRepository, IUserRepository userRep
         return await userRepository.GetUserAsync(email, password);
     }
 
+    public Task<User?> GetUserByIdAsync(Guid userId)
+    {
+        return userRepository.GetByIdAsync(userId);
+    }
+
     public async Task<bool> RegisterAsync(User client)
     {
         return await userRepository.Add(client);

@@ -7,7 +7,7 @@ public abstract class BaseRepository<T>(LibraryContext context) : IBaseRepositor
 {
     protected DbSet<T> DbSet => context.Set<T>();
     
-    public async Task<T?> GetByIdAsync(Guid id)
+    public virtual async Task<T?> GetByIdAsync(Guid id)
     {
         return await DbSet.FindAsync(id);
     }
@@ -46,6 +46,19 @@ public abstract class BaseRepository<T>(LibraryContext context) : IBaseRepositor
             await context.SaveChangesAsync();
             return true;
         }catch(Exception e)
+        {
+            Console.WriteLine(e);
+            return false;
+        }
+    }
+
+    public async Task<bool> SaveAsync()
+    {
+        try
+        {
+            return await context.SaveChangesAsync() > 0;
+        }
+        catch (Exception e)
         {
             Console.WriteLine(e);
             return false;
