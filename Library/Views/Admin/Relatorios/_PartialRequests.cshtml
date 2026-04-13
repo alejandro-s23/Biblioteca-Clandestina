@@ -1,0 +1,150 @@
+@using Microsoft.IdentityModel.Tokens
+@model Library.Models.ViewModel.AdminReportViewModel
+
+<div class="container">
+    <!--
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="titulo-manuscrito mb-0">USUÁRIOS</h4>
+        <button class="btn btn-manuscrito btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosUsers">
+            <i class="bi bi-filter" id="filter"></i> FILTROS
+        </button>
+    </div>
+
+    <div class="collapse mb-4" id="filtrosUsers">
+        <div class="card card-manuscrito p-3 shadow-sm border-clandestino">
+            <form asp-action="Relatorios" method="get" class="row g-2">
+
+                <div class="col-12">
+                    <div class="form-floating mb-2">
+                        <input type="text" name="userSearch" value="@ViewBag.UserSearch"
+                               class="form-control input-manuscrito" id="searchInp" placeholder="Buscar...">
+                        <label for="searchInp" class="fonte-manuscrito">Buscar Usuário</label>
+                    </div>
+                </div>
+
+                <div class="col-6">
+                    <select name="userSortField" class="form-select form-select-sm input-manuscrito">
+                        <option value="Name" selected="@(ViewBag.UserSortField == "Name")">Nome</option>
+                        <option value="Registration" selected="@(ViewBag.UserSortField == "Registration")">Matricula</option>
+                        <option value="Approved" selected="@(ViewBag.UserSortField == "Approved")">Status</option>
+                    </select>
+                </div>
+
+                <div class="col-6">
+                    <select name="userOrder" class="form-select form-select-sm input-manuscrito">
+                        <option value="asc" selected="@(ViewBag.UserOrder == "asc")">A-Z ↑</option>
+                        <option value="desc" selected="@(ViewBag.UserOrder == "desc")">Z-A ↓</option>
+                    </select>
+                </div>
+
+                <div class="col-12 d-flex gap-2 mt-2">
+                    <button type="submit" class="btn btn-manuscrito btn-sm flex-grow-1">APLICAR</button>
+                    <a asp-action="Relatorios" class="btn btn-outline-secondary btn-sm">LIMPAR</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    -->
+    <div class="card card-manuscrito mb-5">
+        <h4 class="titulo-manuscrito">PETIÇÕES DE REGISTRO</h4>
+        <table class="table table-sm table table-hover italic">
+            <thead>
+            <tr>
+                <th>NOME</th>
+                <th>CRIADA</th>
+                <th>AÇÃO</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var request in Model.SignUpRequests)
+            {
+
+                <tr>
+
+                    <td>@request.User.FirstName @request.User.LastName</td>
+                    <td>@request.CreatedAt</td>
+                    <td>
+                        <a onclick="openDetails('@request.Id')" class="btn btn-outline-primary">DETALHES</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <div class="card card-manuscrito mb-5">
+        <div class="align-items-center">
+            <h4 class="titulo-manuscrito">PETIÇÕES DE DEVOLUÇÃO DE LIVROS</h4>
+        </div>
+        <table class="table table-sm table table-hover italic">
+            <thead>
+            <tr>
+                <th>NOME</th>
+                <th>CRIADA</th>
+                <th>AÇÃO</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var request in Model.ReturnsRequests)
+            {
+                <tr>
+
+                    <td>@request.User.FirstName @request.User.LastName</td>
+                    <td>@request.CreatedAt</td>
+                    <td>
+                        <a onclick="openDetails('@request.Id')" class="btn btn-outline-primary">DETALHES</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+@if (Model.Users != null)
+{
+    @foreach (var request in Model.ReturnsRequests)
+    {
+    <div id="@request.Id" class="modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-fluid">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">SOLICITAÇÃO DE DEVOLUÇÃO</h5>
+                    <button type="button" class="btn-close" onclick="closeDetails('@request.Id')" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <table class="table table-hover italic">
+                            <thead>
+                            <tr>
+                                <th>CAMPO</th>
+                                <th>REGISTRO</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>NOME COMPLETO</td>
+                                <td>@request.User.FirstName @request.User.LastName</td>
+                            </tr>
+                            <tr>
+                                <td>CRIADA EM:</td>
+                                <td>@request.CreatedAt</td>
+                            </tr>
+                            <tr>
+                                <td>LIVRO</td>
+                                <td>@request.Body.Book.Title</td>
+                            </tr>
+                            <tr>
+                                <td>DATA DO EMPRÉSTIMO</td>
+                                <td>@request.Body.Book.CurrentRent.RentDate</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-danger" asp-controller="Admin" asp-action="ResetPass">RESETAR SENHA</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+}

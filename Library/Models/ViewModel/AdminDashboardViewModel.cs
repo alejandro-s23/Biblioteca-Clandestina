@@ -14,7 +14,7 @@ public class AdminDashboardViewModel
     }
 
     // Resumo de Solicitações
-    public List<User>? PendingRequests { get; set; }
+    public IEnumerable<User>? PendingRequests { get; set; }
     public int TotalPendingRequests
     {
         get

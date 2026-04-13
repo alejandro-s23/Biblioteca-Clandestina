@@ -17,9 +17,14 @@ public abstract class BaseRepository<T>(LibraryContext context) : IBaseRepositor
         return await DbSet.FindAsync(id) != null;
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync()
+    public async Task<IEnumerable<T>> GetEntitiesAsync(int size = 0)
     {
-        return await DbSet.ToListAsync();
+        return size == 0 ? await DbSet.ToListAsync() : await DbSet.Take(size).ToListAsync();
+    }
+    
+    public async Task<List<T>> GetEntitiesListAsync(int size = 0)
+    {
+        return size == 0 ? await DbSet.ToListAsync() : await DbSet.Take(size).ToListAsync();
     }
 
     public async Task<bool> Delete(T entity)

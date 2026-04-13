@@ -15,12 +15,12 @@ public class BookRentRepository(LibraryContext context) : BaseRepository<BookRen
 
     public async Task<IEnumerable<BookRent>> GetActiveRents(int size)
     {
-        return await DbSet
+        var query = DbSet
             .Include(br => br.Book)
             .Include(br => br.User)
-            .Where( r => r.ReturnDate == null)
-            .Take(size)
-            .ToListAsync();
+            .Where(r => r.ReturnDate == null);
+        return size == 0 ? await query.ToListAsync() : await query.Take(size).ToListAsync();
+
     }
 
     public async Task<BookRent?> GetActiveRentAsync(Guid userId)

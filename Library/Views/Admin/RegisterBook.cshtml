@@ -12,11 +12,11 @@
             <hr class="border-couro" style="width: 50%; margin: 0 auto;">
         </div>
         
-        @if (ViewBag.BookAddSucess != null)
+        @if (TempData["SuccessMessage"] != null)
         {
             <div class="alert alert-success card-manuscrito border-couro alert-dismissible fade show" role="alert">
                 <strong class="text-clandestino">✓ REGISTRO CONFIRMADO:</strong> 
-                <span class="italic">@TempData["MensagemSucesso"]</span>
+                <span class="italic">@TempData["SuccessMessage"]</span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         }

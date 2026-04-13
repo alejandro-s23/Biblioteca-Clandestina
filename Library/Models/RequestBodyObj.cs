@@ -1,13 +1,11 @@
 using System.Reflection;
 using Library.Models.Enums;
 
-namespace Library.Models.ViewModel.DTO;
+namespace Library.Models;
 
 public abstract class RequestBodyObj
 {
-    public RequestTypeEnum Type;
-    
-    public Dictionary<string, object?> ToBodyRequest()
+    public Dictionary<string, object?> ToDict()
     {
         return this.GetType()
             .GetProperties(BindingFlags.Public | BindingFlags.Instance)

@@ -12,20 +12,18 @@ public class HomeController(IRentalService rentalService, IUserService userServi
     [Authorize]
     public async Task<IActionResult> Index(string searchString, string sortField, string sortOrder)
     {
+        
         ViewBag.CurrentSearch = searchString;
         ViewBag.CurrentSortField = sortField;
         ViewBag.CurrentOrder = sortOrder;
         
-    
         // Verificando se o usuário logado tem aluguel ativo
         var userId = User.GetUserId();
         var userHasBook = await userService.HasRentedBookAsync(userId);
+        ViewBag.UserHasBook = userHasBook;
         
         //Filtra os livros
         var books = await bookService.GetOrderedBooksAsync(searchString, sortOrder, sortField);
-        
-        //Dizendo para o programa esperar a resposta de userHasBook para continuar
-        ViewBag.UserHasBook = userHasBook;
         
         return View(books);
     }
@@ -48,11 +46,11 @@ public class HomeController(IRentalService rentalService, IUserService userServi
         var result = await rentalService.RentBookAsync(bookId, userId);
         if (result.Success)
         {
-            TempData["MensagemSucesso"] = result.Message;
+            TempData["SucessMessage"] = result.Message;
         }
         else
         {
-            TempData["MensagemErro"] = result.Message;
+            TempData["ErrorMessage"] = result.Message;
         }
 
         return RedirectToAction("Index");

@@ -15,12 +15,12 @@ public class BookService (IBookRepository bookRepository): IBookService
         }
         else
         {
-            books = await bookRepository.GetAllAsync();
+            books = await bookRepository.GetEntitiesAsync();
         }
         books = sortField switch
         {
             "Author" => sortOrder == "desc" ? books.OrderByDescending(b => b.Author) : books.OrderBy(b => b.Author),
-            "Available" => sortOrder == "desc" ? books.OrderByDescending(b => !b.Avaliable) : books.OrderBy(b => !b.Avaliable),
+            "Available" => sortOrder == "desc" ? books.OrderByDescending(b => !b.Available) : books.OrderBy(b => !b.Available),
             "Recent" => sortOrder == "desc" ? books.OrderByDescending(b => b.Added).Reverse() : books.OrderBy(b => b.Added).Reverse(),
             _ => sortOrder == "desc" ? books.OrderByDescending(b => b.Title) : books.OrderBy(b => b.Title),
         };
@@ -36,6 +36,11 @@ public class BookService (IBookRepository bookRepository): IBookService
     public async Task<int> CountAsync()
     {
         return await bookRepository.CountAsync();
+    }
+
+    public Task<IEnumerable<Book>> GetAllBooksAsync()
+    {
+        return bookRepository.GetEntitiesAsync();
     }
 
     public async Task<IEnumerable<string?>> GetAuthorsAsync()

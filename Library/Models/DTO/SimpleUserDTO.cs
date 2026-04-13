@@ -1,6 +1,6 @@
 using System.Security.Principal;
 
-namespace Library.Models.ViewModel.DTO;
+namespace Library.Models.DTO;
 
 public class SimpleUserDTO
 {

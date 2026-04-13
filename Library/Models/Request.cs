@@ -18,6 +18,7 @@ public sealed class Request
     public RequestStatusEnum Status { get; set; } = RequestStatusEnum.PENDING;
     [Required]
     public DateTime CreatedAt { get; set; } = DateTime.Now;
-    public DateTime UpdatedAt { get; set; }
-    
+
+    public DateTime? UpdatedAt { get; set; } = null;
+
 }

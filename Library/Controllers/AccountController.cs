@@ -23,12 +23,11 @@ public class AccountController(IUserService userService, IRentalService rentalSe
         var user = await userService.GetUserByIdAsync(userId);
         if (user == null)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("Client not found");
-            Console.ResetColor();
-            return RedirectToAction("Index", User.GetHomePage());
+            TempData["ErrorMessage"] = "Usuário não encontrado";
+            return RedirectToAction("Index", "Access");
         };
         
+        var hasActiveRequest = requestService.HasRequestPendingAsync(userId,RequestTypeEnum.RETURNS);
         var viewModel = new UserProfileViewModel
         {
             FullName = user.FirstName + " " + user.LastName,
@@ -39,14 +38,15 @@ public class AccountController(IUserService userService, IRentalService rentalSe
             Address = user.Address,
             District = user.District,
             Phone = user.Phone,
-            HomePage = User.GetHomePage()
+            HomePage = User.GetHomePage(),
+            HasReturnRequest = await hasActiveRequest
+            
         };
 
         // Busca o livro que o usuário está segurando
         var currentRent = await rentalService.GetActiveRentAsync(userId);
         if (currentRent != null)
         {
-            rentalService.UpdateRentTime(currentRent);
             viewModel.ActiveBook = currentRent.Book;
             viewModel.RentTimeDays = currentRent.RentTimeDays;
             
@@ -75,8 +75,8 @@ public class AccountController(IUserService userService, IRentalService rentalSe
 
         var result = await userService.UpdateProfileAsync(clientData);
 
-        if (result.Success) TempData["MensagemSucesso"] = result.Message;
-        else TempData["MensagemErro"] = result.Message;
+        if (result.Success) TempData["SuccessMessage"] = result.Message;
+        else TempData["ErrorMessage"] = result.Message;
 
         return RedirectToAction("Index", $"{User.GetHomePage()}");
     }
@@ -84,6 +84,7 @@ public class AccountController(IUserService userService, IRentalService rentalSe
     [HttpPost]
     public async Task<IActionResult> Return(Guid bookId)
     {
+        /*
         var activeRent = await rentalService.GetActiveRentAsync(User.GetUserId());
         if (activeRent != null)
         {
@@ -94,16 +95,18 @@ public class AccountController(IUserService userService, IRentalService rentalSe
                 RentDate =  activeRent.RentDate,
                 RentId = activeRent.Id,
             };
-            if (!await requestService.CreateRequestAsync(User.GetUserId(), requestBody))
+            var result = await requestService.CreateRequestAsync(User.GetUserId(), requestBody);
+            if (!result.success)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Request failed");
+                Console.WriteLine(result.message);
                 Console.ResetColor();
                 return RedirectToAction("Index", User.GetHomePage());
 
             }
         }
-        
+        */
+        TempData["ErrorMessage"] = "Ocorreu um erro na chamado";
         return RedirectToAction("Profile");
     }
 }

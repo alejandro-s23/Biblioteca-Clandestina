@@ -1,6 +1,7 @@
 using Library.Data;
 using Library.Data.Interfaces;
 using Library.Models;
+using Library.Models.ViewModel.DTO;
 using Library.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -60,9 +61,23 @@ public class UserService(IBookRepository bookRepository, IUserRepository userRep
         return await userRepository.Add(client);
     }
 
-    public async Task<List<User>> GetUsersAsync(int size = 5)
+    public async Task<IEnumerable<User>> GetUsersAsync(int size = 0)
     {
-        return await userRepository.GetPendingRegistrationsListAsync(size);
+        return await userRepository.GetEntitiesAsync();
+    }
+
+    public async Task<List<User>> GetUsersListAsync(int size = 0)
+    {
+        return await userRepository.GetEntitiesListAsync();
+    }
+
+    public async Task<IEnumerable<User>> GetActiveUsersAsync(int size = 0)
+    {
+        return await userRepository.GetActiveUsersListAsync(size);
+    }
+    public async Task<List<User>> GetActiveUsersListAsync(int size = 0)
+    {
+        return await userRepository.GetActiveUsersListAsync(size);
     }
 
     public async Task<bool> ApproveUser(Guid id)
@@ -74,5 +89,19 @@ public class UserService(IBookRepository bookRepository, IUserRepository userRep
             return await userRepository.Update(client);
         }
         return false;
+    }
+
+    public async Task<IEnumerable<User>> GetAOrderedUsersAsync(string searchString, string sortOrder, string sortField)
+    {
+        var users = await userRepository.GetEntitiesAsync();
+        /*
+        users = sortField switch
+        {
+            "Approved" => sortOrder == "desc" ? users.OrderByDescending(b => !b.IsApproved) : users.OrderBy(b => !b.IsApproved),
+            "Registration" => sortOrder == "desc" ? users.OrderByDescending(b => b.Registration) : users.OrderBy(b => b.Registration),
+            _ => sortOrder == "desc" ? users.OrderByDescending(b => b.FirstName) : users.OrderBy(b => b.FirstName),
+        };
+        */
+        return users;
     }
 }

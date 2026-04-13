@@ -6,7 +6,7 @@ public interface IRentalService
 {
     Task<(bool Success, string Message)> RentBookAsync(Guid bookId, Guid clientId);
     Task<(bool Success, string Message)> ReturnBookAsync(Guid bookId);
-    bool UpdateRentTime(BookRent? bookRent);
     Task<BookRent?> GetActiveRentAsync(Guid clientId);
-    Task<IEnumerable<BookRent>> GetActiveRents(int size);
+    Task<IEnumerable<BookRent>> GetActiveRents(int size = 0);
+    Task<IEnumerable<BookRent>> GetAllRentsAsync();
 }

@@ -20,7 +20,7 @@ public class RentalService(IBookRepository bookRepository, IBookRentRepository r
         if (book == null) return (false, "O manuscrito não foi encontrado nos registros.");
         
         // 2. Validação de disponibilidade
-        if (!book.Avaliable) return (false, "Este manuscrito já está em posse de outro.");
+        if (!book.Available) return (false, "Este manuscrito já está em posse de outro.");
 
         var newRent = new BookRent
         {
@@ -34,7 +34,7 @@ public class RentalService(IBookRepository bookRepository, IBookRentRepository r
             return (false, "Erro ao inserir novo registro de aluguel.");
         
         book.IdCurrentRent = newRent.Id;
-        book.Avaliable = false;
+        book.Available = false;
 
         if (await bookRepository.SaveAsync())
         {
@@ -55,7 +55,7 @@ public class RentalService(IBookRepository bookRepository, IBookRentRepository r
     
         // Limpa a chave estrangeira virtual e libera o livro
         book.IdCurrentRent = null;
-        book.Avaliable = true;
+        book.Available = true;
         
         if(await bookRepository.Update(book))
         {
@@ -65,21 +65,21 @@ public class RentalService(IBookRepository bookRepository, IBookRentRepository r
         return (false, "Erro inesperado.");
     }
 
-    public bool UpdateRentTime(BookRent? bookRent)
-    {
-        if (bookRent == null)
-            return false;
-        bookRent.RentTimeDays = (int)(Math.Ceiling(DateTime.Now.Date.Subtract(bookRent.RentDate.Date).TotalDays));
-        return true;
-    }
-
     public async Task<BookRent?> GetActiveRentAsync(Guid userId)
     {
         return await rentRepository.GetActiveRentAsync(userId);
     }
 
-    public async Task<IEnumerable<BookRent>> GetActiveRents(int size = 5)
+    public async Task<IEnumerable<BookRent>> GetActiveRents(int size = 0)
     {
         return await rentRepository.GetActiveRents(size);
+    }
+
+    public async Task<IEnumerable<BookRent>> GetAllRentsAsync()
+    {
+        var rents = await rentRepository.GetEntitiesAsync();
+        var allRentsAsync = rents.ToList();
+        var orderedEnumerable = allRentsAsync.OrderByDescending(x => x.RentDate);
+        return orderedEnumerable;
     }
 }

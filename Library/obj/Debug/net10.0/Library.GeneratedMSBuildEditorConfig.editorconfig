@@ -54,8 +54,24 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vUmVnaXN0ZXJCb29rLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/ale/Library/CloudStorage/Dropbox/Dev/Programs/dev/BibliotecaMVC/Library/Views/Admin/Relatorios/Users.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vUmVsYXRvcmlvcy9Vc2Vycy5jc2h0bWw=
+[/Users/ale/Library/CloudStorage/Dropbox/Dev/Programs/dev/BibliotecaMVC/Library/Views/Admin/Relatorios/Relatorios.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vUmVsYXRvcmlvcy9SZWxhdG9yaW9zLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ale/Library/CloudStorage/Dropbox/Dev/Programs/dev/BibliotecaMVC/Library/Views/Admin/Relatorios/_PartialBooks.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vUmVsYXRvcmlvcy9fUGFydGlhbEJvb2tzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ale/Library/CloudStorage/Dropbox/Dev/Programs/dev/BibliotecaMVC/Library/Views/Admin/Relatorios/_PartialRents.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vUmVsYXRvcmlvcy9fUGFydGlhbFJlbnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ale/Library/CloudStorage/Dropbox/Dev/Programs/dev/BibliotecaMVC/Library/Views/Admin/Relatorios/_PartialRequests.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vUmVsYXRvcmlvcy9fUGFydGlhbFJlcXVlc3RzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ale/Library/CloudStorage/Dropbox/Dev/Programs/dev/BibliotecaMVC/Library/Views/Admin/Relatorios/_PartialUsers.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vUmVsYXRvcmlvcy9fUGFydGlhbFVzZXJzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/ale/Library/CloudStorage/Dropbox/Dev/Programs/dev/BibliotecaMVC/Library/Views/Admin/RelSolicitacoes.cshtml]
@@ -76,6 +92,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [/Users/ale/Library/CloudStorage/Dropbox/Dev/Programs/dev/BibliotecaMVC/Library/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ale/Library/CloudStorage/Dropbox/Dev/Programs/dev/BibliotecaMVC/Library/Views/Shared/_ModalError.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19Nb2RhbEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/ale/Library/CloudStorage/Dropbox/Dev/Programs/dev/BibliotecaMVC/Library/Views/Shared/_ValidationScriptsPartial.cshtml]

@@ -20,4 +20,24 @@ public class UserRepository (LibraryContext context): BaseRepository<User>(conte
             .Take(size)
             .ToListAsync();
     }
+
+    public async Task<IEnumerable<User>> GetActiveUsersAsync(int size)
+    {
+        var query = DbSet.Where(u => u.IsApproved);
+        return size == 0 ?await  query.ToListAsync() : await query.Take(size).ToListAsync();
+    }
+    
+    public async Task<List<User>> GetActiveUsersListAsync(int size)
+    {
+        var query = DbSet.Where(u => u.IsApproved);
+        return size == 0 ?await  query.ToListAsync() : await query.Take(size).ToListAsync();
+    }
+
+    public async Task<IEnumerable<User>> GetUsersByNameAsync(string name)
+    {
+        return await DbSet.Where(u =>
+                u.FirstName != null && u.LastName != null &&
+                (u.FirstName + " " + u.LastName).ToLower().Contains(name.ToLower()))
+            .ToListAsync();
+    }
 }

@@ -17,12 +17,12 @@ public class BookRepository(LibraryContext context) : BaseRepository<Book>(conte
 
     public async Task<IEnumerable<Book>> GetRentedBooksAsync()
     {
-        return await _context.Books.Where(b => !b.Avaliable).ToListAsync();
+        return await _context.Books.Where(b => !b.Available).ToListAsync();
     }
 
     public async Task<IEnumerable<Book>> GetAvailableBooksAsync()
     {
-        return await _context.Books.Where(b => b.Avaliable).ToListAsync();
+        return await _context.Books.Where(b => b.Available).ToListAsync();
     }
 
     public async Task<IEnumerable<Book>> GetBooksByTitleAsync(string searchTitle)

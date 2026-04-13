@@ -12,8 +12,8 @@ html {
   }
 }
 
-.card{
-
+.modal .modal-content {
+  width: 90%;
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
@@ -98,7 +98,6 @@ body {
 /* Efeito de 'Passar a Pena' (Hover) */
 .navbar-light .nav-link:hover {
   
-
   text-decoration: underline; /* Simula um grifo manual */
 }
 
