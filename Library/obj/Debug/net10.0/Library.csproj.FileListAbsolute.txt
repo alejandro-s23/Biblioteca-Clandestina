@@ -218,8 +218,6 @@
 /Users/ale/Library/CloudStorage/Dropbox/Dev/Programs/dev/BibliotecaMVC/Library/obj/Debug/net10.0/Library.genruntimeconfig.cache
 /Users/ale/Library/CloudStorage/Dropbox/Dev/Programs/dev/BibliotecaMVC/Library/obj/Debug/net10.0/ref/Library.dll
 /Users/ale/Library/CloudStorage/Dropbox/Dev/Programs/dev/BibliotecaMVC/Library/obj/Debug/net10.0/compressed/80l2mev20u-{0}-qkk2nj7s3l-qkk2nj7s3l.gz
-/Users/ale/Library/CloudStorage/Dropbox/Dev/Programs/dev/BibliotecaMVC/Library/obj/Debug/net10.0/compressed/pp8kl35ur8-{0}-5a16pb1t20-5a16pb1t20.gz
-/Users/ale/Library/CloudStorage/Dropbox/Dev/Programs/dev/BibliotecaMVC/Library/obj/Debug/net10.0/compressed/qg5kwgdh7i-{0}-slf50xjh7i-slf50xjh7i.gz
 /Users/ale/Library/CloudStorage/Dropbox/Dev/Programs/dev/BibliotecaMVC/Library/bin/Debug/net10.0/Microsoft.AspNetCore.Razor.Language.dll
 /Users/ale/Library/CloudStorage/Dropbox/Dev/Programs/dev/BibliotecaMVC/Library/bin/Debug/net10.0/Microsoft.Build.dll
 /Users/ale/Library/CloudStorage/Dropbox/Dev/Programs/dev/BibliotecaMVC/Library/bin/Debug/net10.0/Microsoft.CodeAnalysis.CSharp.Features.dll
@@ -362,3 +360,5 @@
 /Users/ale/Library/CloudStorage/Dropbox/Dev/Programs/dev/BibliotecaMVC/Library/bin/Debug/net10.0/runtimes/win-arm64/native/e_sqlite3.dll
 /Users/ale/Library/CloudStorage/Dropbox/Dev/Programs/dev/BibliotecaMVC/Library/bin/Debug/net10.0/runtimes/win-x64/native/e_sqlite3.dll
 /Users/ale/Library/CloudStorage/Dropbox/Dev/Programs/dev/BibliotecaMVC/Library/bin/Debug/net10.0/runtimes/win-x86/native/e_sqlite3.dll
+/Users/ale/Library/CloudStorage/Dropbox/Dev/Programs/dev/BibliotecaMVC/Library/obj/Debug/net10.0/compressed/pp8kl35ur8-{0}-jtz5vxeyap-jtz5vxeyap.gz
+/Users/ale/Library/CloudStorage/Dropbox/Dev/Programs/dev/BibliotecaMVC/Library/obj/Debug/net10.0/compressed/qg5kwgdh7i-{0}-j0v32v7sxl-j0v32v7sxl.gz

@@ -1,15 +1,18 @@
 using Library.Data;
+using Library.Data.Interfaces;
 using Library.Models;
+using Library.Models.ViewModel.DTO;
+using Library.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Services;
 
-public class UserService(LibraryContext context) : IUserService
+public class UserService(IBookRepository bookRepository, IUserRepository userRepository) : IUserService
 {
-    public async Task<(bool Success, string Message)> UpdateProfileAsync(Client updatedClient)
+    public async Task<(bool Success, string Message)> UpdateProfileAsync(User updatedClient)
     {
         // 1. Localizamos o registro original pelo ID [cite: 2025-10-29]
-        var existingClient = await context.Clients.FindAsync(updatedClient.Id);
+        var existingClient = await userRepository.GetByIdAsync(updatedClient.Id);
 
         if (existingClient == null)
         {
@@ -20,6 +23,7 @@ public class UserService(LibraryContext context) : IUserService
         
         existingClient.Email = updatedClient.Email;
         existingClient.Phone = updatedClient.Phone;
+        existingClient.Complement = updatedClient.Complement;
         existingClient.AddressNumber = updatedClient.AddressNumber;
         existingClient.Address = updatedClient.Address;
         existingClient.District = updatedClient.District;
@@ -28,7 +32,7 @@ public class UserService(LibraryContext context) : IUserService
 
         try
         {
-            await context.SaveChangesAsync();
+            await userRepository.Update(existingClient);
             return (true, "Seus dados foram atualizados com sucesso.");
         }
         catch (Exception)
@@ -37,10 +41,67 @@ public class UserService(LibraryContext context) : IUserService
         }
     }
 
-    public async Task<bool> IsAdminAsync(Guid id)
+    public async Task<bool> HasRentedBookAsync(Guid userId)
     {
-        var admin = await context.Clients.Where(c => c.IsAdmin).AnyAsync(c => c.Id == id);
-        return admin;
+        return await bookRepository.AnyBookTenantAsync(userId); 
     }
-    
+
+    public async Task<User?> GetUserAsync(string email, string password)
+    {
+        return await userRepository.GetUserAsync(email, password);
+    }
+
+    public Task<User?> GetUserByIdAsync(Guid userId)
+    {
+        return userRepository.GetByIdAsync(userId);
+    }
+
+    public async Task<bool> RegisterAsync(User client)
+    {
+        return await userRepository.Add(client);
+    }
+
+    public async Task<IEnumerable<User>> GetUsersAsync(int size = 0)
+    {
+        return await userRepository.GetEntitiesAsync();
+    }
+
+    public async Task<List<User>> GetUsersListAsync(int size = 0)
+    {
+        return await userRepository.GetEntitiesListAsync();
+    }
+
+    public async Task<IEnumerable<User>> GetActiveUsersAsync(int size = 0)
+    {
+        return await userRepository.GetActiveUsersListAsync(size);
+    }
+    public async Task<List<User>> GetActiveUsersListAsync(int size = 0)
+    {
+        return await userRepository.GetActiveUsersListAsync(size);
+    }
+
+    public async Task<bool> ApproveUser(Guid id)
+    {
+        var client = await userRepository.GetByIdAsync(id);
+        if (client != null)
+        {
+            client.IsApproved = true;
+            return await userRepository.Update(client);
+        }
+        return false;
+    }
+
+    public async Task<IEnumerable<User>> GetAOrderedUsersAsync(string searchString, string sortOrder, string sortField)
+    {
+        var users = await userRepository.GetEntitiesAsync();
+        /*
+        users = sortField switch
+        {
+            "Approved" => sortOrder == "desc" ? users.OrderByDescending(b => !b.IsApproved) : users.OrderBy(b => !b.IsApproved),
+            "Registration" => sortOrder == "desc" ? users.OrderByDescending(b => b.Registration) : users.OrderBy(b => b.Registration),
+            _ => sortOrder == "desc" ? users.OrderByDescending(b => b.FirstName) : users.OrderBy(b => b.FirstName),
+        };
+        */
+        return users;
+    }
 }

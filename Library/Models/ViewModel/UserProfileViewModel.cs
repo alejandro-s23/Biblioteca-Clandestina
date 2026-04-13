@@ -18,4 +18,5 @@ public class UserProfileViewModel
     // Informação do Aluguel Ativo
     public Book? ActiveBook { get; set; }
     public int RentTimeDays { get; set; }
+    public bool HasReturnRequest { get; set; }
 }

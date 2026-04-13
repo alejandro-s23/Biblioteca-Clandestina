@@ -1,45 +1,37 @@
-using Library.Data;
-using Library.Extensions;
 using Library.Models;
+using Library.Models.DTO;
+using Library.Models.Enums;
 using Library.Models.ViewModel;
-using Library.Services;
+using Library.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Library.Controllers;
 
-[Authorize(Roles = "Admin")] // Futuramente você filtrará por IsAdmin
-public class AdminController(LibraryContext context, UserService userService) : Controller
+[Authorize(Roles = "Admin")]
+public class AdminController(
+    IUserService userService,
+    IRentalService rentalService,
+    IBookService bookService,
+    IRequestService requestService
+    ) : Controller
 {
-    private readonly LibraryContext _context = context;
     public async Task<IActionResult> Index()
     {
-        var isAdminClaim = User.FindFirst("IsAdmin")?.Value;
-        var isAdmin = await userService.IsAdminAsync(User.GetUserId());
-        if (isAdminClaim != "True" && isAdmin)
+        if (!User.IsInRole("Admin"))
             return RedirectToAction("Index", "Access");
         
         var viewModel = new AdminDashboardViewModel
         {
             // Busca solicitações pendentes
-            PendingRequests = await _context.Clients
-                .Where(c => !c.IsApproved)
-                .OrderBy(c => c.FirstName)
-                .Take(5)
-                .ToListAsync(),
+            PendingRequests = await userService.GetActiveUsersAsync(5),
 
             // Busca aluguéis sem data de retorno
-            ActiveRents = await _context.BookRents
-                .Include(br => br.Book)
-                .Include(br => br.Client)
-                .Where(br => br.ReturnDate == null)
-                .Take(5)
-                .ToListAsync(),
+            ActiveRents = await rentalService.GetActiveRents(5),
 
             // Métrica de Inventário
-            TotalBooks = await _context.Books.CountAsync(),
-            AvailableBooks = await _context.Books.CountAsync(b => b.Avaliable)
+            TotalBooks = await bookService.CountAsync(),
+            AvailableBooks = await bookService.CountAvailableAsync()
         };
 
         return View(viewModel);
@@ -47,26 +39,14 @@ public class AdminController(LibraryContext context, UserService userService) : 
 
     public async Task<IActionResult> Approve(Guid id)
     {
-        var client = await _context.Clients.FindAsync(id);
-        if (client != null)
-        {
-            client?.IsApproved = true;
-            await _context.SaveChangesAsync();
-        }
-
+        await userService.ApproveUser(id);
         return RedirectToAction("Index","Admin");
     }
-
+    
     [HttpGet]
     public async Task<IActionResult> RegisterBook()
     {
-        var existingAuthors = await _context.Books
-            .Select(b => b.Author)
-            .Distinct()
-            .OrderBy(a => a)
-            .ToListAsync();
-
-        ViewBag.Authors = existingAuthors;
+        ViewBag.Authors = await bookService.GetAuthorsAsync();
         return View();
     }
 
@@ -74,22 +54,84 @@ public class AdminController(LibraryContext context, UserService userService) : 
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RegisterBook(Book book)
     {
-        if (ModelState.IsValid)
+        if (ModelState.IsValid && await bookService.AddBookAsync(book))
         {
-            _context.Books.Add(book);
-            await _context.SaveChangesAsync();
-            ViewBag.BookAddSucess = "Livro adicionado com sucesso!";
+            TempData["SuccessMessage"] = $"O livro {book.Title} de {book.Author} foi guardado nas estantes";
             return RedirectToAction("RegisterBook", "Admin");
         }
-        
         // SE CHEGOU AQUI, O MODEL ESTÁ INVÁLIDO. 
-        // PRECISAMOS REABASTECER A LISTA DE AUTORES! [cite: 2025-10-29]
-        ViewBag.Authors = await _context.Books
-            .Select(b => b.Author)
-            .Distinct()
-            .OrderBy(a => a)
-            .ToListAsync();
+        ViewBag.Authors = bookService.GetAuthorsAsync();
         
         return View(book);
+    }
+
+    public async Task<IActionResult> Relatorios()
+    {
+        
+        var users = await userService.GetActiveUsersAsync();
+        /*
+        var usersDtos = users.Select(x => new SimpleUserDTO()
+        {
+            Id = x.Id,
+            Approved = x.IsApproved,
+            Name = x.FirstName + " " + x.LastName,
+            Registration = x.Registration
+        });
+        */
+        //Lendo os dados para o viewmodel
+        var rent = await rentalService.GetActiveRents();
+        var returnsRequests = await requestService.GetActiveRequestByType(RequestTypeEnum.RETURNS);
+        var signupRequests = await requestService.GetActiveRequestByType(RequestTypeEnum.REGISTER);
+        
+        //Convertendo para DTO
+        var returnsRequestsDto = returnsRequests.Select(async r => new ReturnRequestDTO()
+        {
+            Id = r.Id,
+            CreatedAt = r.CreatedAt,
+            UpdatedAt = r.UpdatedAt,
+            Status = r.Status,
+            Type = r.Type,
+            User = r.User,
+            UserId = r.UserId,
+            Body = await requestService.ResolveRequestBody(r) as ReturnsRequestBody
+        });
+        var signupRequestsDto = signupRequests.Select(async r => new RegisterRequestDTO()
+        {
+            Id = r.Id,
+            CreatedAt = r.CreatedAt,
+            UpdatedAt = r.UpdatedAt,
+            Status = r.Status,
+            Type = r.Type,
+            User = r.User,
+            UserId = r.UserId,
+            Body = await requestService.ResolveRequestBody(r) as RegisterRequestBody
+        });
+        
+        //Criando o ViewModel
+        var viewModel = new AdminReportViewModel()
+        {
+            Books = await bookService.GetAllBooksAsync(),
+            Rents = rent,
+            Users = users,
+            SignUpRequests =  signupRequestsDto.Select(r => r.Result),
+            ReturnsRequests = returnsRequestsDto.Select(r => r.Result),
+        };
+        return View("Relatorios/Relatorios", viewModel);
+    }
+    
+    public IActionResult GetUsers()
+    {
+        
+        return PartialView("Relatorios/_PartialUsers");
+    }
+    
+    public IActionResult GetBooks()
+    {
+        return PartialView("Relatorios/_PartialBooks");
+    }
+
+    public IActionResult GetRents()
+    {
+        return PartialView("Relatorios/_PartialRents");
     }
 }

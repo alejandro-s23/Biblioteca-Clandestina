@@ -25,17 +25,18 @@
                 </div>
 
                 <div class="col-6">
-                    <select name="sortOrder" class="form-select form-select-sm input-manuscrito">
-                        <option value="Title" selected="@(ViewBag.CurrentSort == "Title")">Título</option>
-                        <option value="Author" selected="@(ViewBag.CurrentSort == "Author")">Autor</option>
-                        <option value="Available" selected="@(ViewBag.CurrentSort == "Avaliable")">Status</option>
+                    <select name="sortField" class="form-select form-select-sm input-manuscrito">
+                        <option value="Title" selected="@(ViewBag.CurrentSortField == "Title")">Título</option>
+                        <option value="Author" selected="@(ViewBag.CurrentSortField == "Author")">Autor</option>
+                        <option value="Available" selected="@(ViewBag.CurrentSortField == "Available")">Status</option>
+                        <option value="Recent" selected="@(ViewBag.CurrentSortField == "Recent")">Data de Inclusão</option>
                     </select>
                 </div>
 
                 <div class="col-6">
-                    <select name="sortDirection" class="form-select form-select-sm input-manuscrito">
-                        <option value="asc" selected="@(ViewBag.CurrentDirection == "asc")">A-Z ↑</option>
-                        <option value="desc" selected="@(ViewBag.CurrentDirection == "desc")">Z-A ↓</option>
+                    <select name="sortOrder" class="form-select form-select-sm input-manuscrito">
+                        <option value="asc" selected="@(ViewBag.CurrentOrder == "asc")">A-Z ↑</option>
+                        <option value="desc" selected="@(ViewBag.CurrentOrder == "desc")">Z-A ↓</option>
                     </select>
                 </div>
 
@@ -46,7 +47,7 @@
             </form>
         </div>
     </div>
-    <div class="row">
+    <div class="row ">
         @foreach (var item in Model)
         {
             <div class="col-12 col-md-6 col-lg-4 mb-4">
@@ -55,12 +56,18 @@
 
                         <h5 class="card-title fw-bold mb-1">@item.Title?.ToUpper()</h5>
                         <p class="card-text italic mb-3 col-12 text-muted">Escrito por: @item.Author</p>
+                        <button type="button" class="btn btn-manuscrito" data-bs-toggle="collapse" data-bs-target="#@item.Id">
+                            <i class="bi">SINOPSIA</i>
+                        </button>
 
                         <hr style="border-top: 1px dashed var(--borda-couro); opacity: 0.4;">
-
+                        
+                        <div id="@item.Id" class="collapse mb-4">
+                            <p class="card-text italic col-12">@item.Description</p>
+                        </div>
                         <div class="mt-auto">
                             <div class="mb-3">
-                                @if (!item.Avaliable)
+                                @if (!item.Available)
                                 {
                                     <span class="tinta-status-indisponivel">✗_RESERVADO_POR_OUTREM</span>
                                 }
@@ -70,7 +77,7 @@
                                 }
                             </div>
 
-                            @if (item.Avaliable)
+                            @if (item.Available)
                             {
                                 @if (ViewBag.UserHasBook)
                                 {

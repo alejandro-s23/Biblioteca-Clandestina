@@ -1,0 +1,75 @@
+@model Library.Models.ViewModel.AdminReportViewModel
+
+<div class="container">
+
+    <!--
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="titulo-manuscrito mb-0">ACERVO</h4>
+        <button class="btn btn-manuscrito btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosBooks">
+            <i class="bi bi-filter" id="filter"></i> FILTROS
+        </button>
+    </div>
+
+    <div class="collapse mb-4" id="filtrosBooks">
+        <div class="card card-manuscrito p-3 shadow-sm border-clandestino">
+            <form asp-action="Relatorios" method="get" class="row g-2">
+
+                <div class="col-12">
+                    <div class="form-floating mb-2">
+                        <input type="text" name="booksSearch" value="@ViewBag.UserSearch"
+                               class="form-control input-manuscrito" id="searchInp" placeholder="Buscar...">
+                        <label for="searchInp" class="fonte-manuscrito">Buscar Usuário</label>
+                    </div>
+                </div>
+
+                <div class="col-6">
+                    <select name="booksSortField" class="form-select form-select-sm input-manuscrito">
+                        <option value="Name" selected="@(ViewBag.UserSortField == "Name")">Nome</option>
+                        <option value="Registration" selected="@(ViewBag.UserSortField == "Registration")">Matricula</option>
+                        <option value="Approved" selected="@(ViewBag.UserSortField == "Approved")">Status</option>
+                    </select>
+                </div>
+
+                <div class="col-6">
+                    <select name="booksOrder" class="form-select form-select-sm input-manuscrito">
+                        <option value="asc" selected="@(ViewBag.UserOrder == "asc")">A-Z ↑</option>
+                        <option value="desc" selected="@(ViewBag.UserOrder == "desc")">Z-A ↓</option>
+                    </select>
+                </div>
+
+                <div class="col-12 d-flex gap-2 mt-2">
+                    <button type="submit" class="btn btn-manuscrito btn-sm flex-grow-1">APLICAR</button>
+                    <a asp-action="Relatorios" class="btn btn-outline-secondary btn-sm">LIMPAR</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    -->
+    <div class="card card-manuscrito mb-5">
+        <table class="table table-sm table table-hover italic">
+            <thead>
+            <tr>
+                <th>NOME</th>
+                <th>AUTOR</th>
+                <th>AÇÃO</th>
+            </tr>
+            </thead>
+            <tbody>
+            @if (Model.Users != null)
+            {
+                foreach (var book in Model.Books)
+                {
+
+                    <tr>
+                        <td>@book.Title</td>
+                        <td>@book.Author</td>
+                        <td>
+                            <a class="btn btn-outline-primary">DETALHES</a>
+                        </td>
+                    </tr>
+                }
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -20,14 +20,14 @@
             <a class="navbar-brand" asp-controller="@User.GetHomePage()" asp-action="Index">BIBLIOTECA CLANDESTINA</a>
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
-                    @if (User.FindFirst("IsAdmin")?.Value == "True")
+                    @if (User.IsInRole("Admin"))
                     {
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Admin" asp-action="Index">DASHBOARD</a>
                         </li>
                     }
                     @await RenderSectionAsync("NavItems", required: false)
-                    @if (User.Identity is { IsAuthenticated: true })
+                    @if (User.Identity is { IsAuthenticated: true } && ViewContext.RouteData.Values["action"]?.ToString() != "Profile")
                     {
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Account" asp-action="Profile">MINHA CONTA</a>
@@ -59,6 +59,8 @@
         &copy; 2026 - Biblioteca Clandestina - Jaguarão - RS
     </div>
 </footer>
+
+<partial name="_ModalError" />
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
