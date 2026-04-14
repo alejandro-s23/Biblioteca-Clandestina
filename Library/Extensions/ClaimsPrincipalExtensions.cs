@@ -20,12 +20,11 @@ public static class ClaimsPrincipalExtensions
 
     public static string GetHomePage(this ClaimsPrincipal user)
     {
-        var isAdmin = user.FindFirst("IsAdmin")?.Value;
-        if (isAdmin == "True")
+        if (user.IsInRole("Admin"))
         {
             return "Admin";
         }
-        else if (isAdmin == "False")
+        else if (user.IsInRole("User"))
         {
             return "Home";
         }

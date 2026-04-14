@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Library.Models;
 
-public class Client
+public class User
 {
     [Key]
     public Guid Id { get; set; } = Guid.NewGuid();

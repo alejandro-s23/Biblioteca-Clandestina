@@ -11,7 +11,8 @@ public class Book
     [Required(ErrorMessage = "O Campo Título deve ser preenchido")] public string? Title { get; set; }
     [MaxLength(50, ErrorMessage = "O nome do autor deve conter no maximo 50 caracteres")]
     [Required(ErrorMessage = "O Campo Autor deve ser preenchido")] public string? Author { get; set; }
-    public bool Avaliable { get; set; } = true;
+    public string? Description { get; set; }
+    public bool Available { get; set; } = true;
     public DateTime Added { get; set; } = DateTime.Now;
     [ForeignKey("CurrentRent")]
     public Guid? IdCurrentRent { get; set; }
