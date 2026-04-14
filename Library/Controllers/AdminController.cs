@@ -1,0 +1,137 @@
+using Library.Models;
+using Library.Models.DTO;
+using Library.Models.Enums;
+using Library.Models.ViewModel;
+using Library.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Library.Controllers;
+
+[Authorize(Roles = "Admin")]
+public class AdminController(
+    IUserService userService,
+    IRentalService rentalService,
+    IBookService bookService,
+    IRequestService requestService
+    ) : Controller
+{
+    public async Task<IActionResult> Index()
+    {
+        if (!User.IsInRole("Admin"))
+            return RedirectToAction("Index", "Access");
+        
+        var viewModel = new AdminDashboardViewModel
+        {
+            // Busca solicitações pendentes
+            PendingRequests = await userService.GetActiveUsersAsync(5),
+
+            // Busca aluguéis sem data de retorno
+            ActiveRents = await rentalService.GetActiveRents(5),
+
+            // Métrica de Inventário
+            TotalBooks = await bookService.CountAsync(),
+            AvailableBooks = await bookService.CountAvailableAsync()
+        };
+
+        return View(viewModel);
+    }
+
+    public async Task<IActionResult> Approve(Guid id)
+    {
+        await userService.ApproveUser(id);
+        return RedirectToAction("Index","Admin");
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> RegisterBook()
+    {
+        ViewBag.Authors = await bookService.GetAuthorsAsync();
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> RegisterBook(Book book)
+    {
+        if (ModelState.IsValid && await bookService.AddBookAsync(book))
+        {
+            TempData["SuccessMessage"] = $"O livro {book.Title} de {book.Author} foi guardado nas estantes";
+            return RedirectToAction("RegisterBook", "Admin");
+        }
+        // SE CHEGOU AQUI, O MODEL ESTÁ INVÁLIDO. 
+        ViewBag.Authors = bookService.GetAuthorsAsync();
+        
+        return View(book);
+    }
+
+    public async Task<IActionResult> Relatorios()
+    {
+        
+        var users = await userService.GetActiveUsersAsync();
+        /*
+        var usersDtos = users.Select(x => new SimpleUserDTO()
+        {
+            Id = x.Id,
+            Approved = x.IsApproved,
+            Name = x.FirstName + " " + x.LastName,
+            Registration = x.Registration
+        });
+        */
+        //Lendo os dados para o viewmodel
+        var rent = await rentalService.GetActiveRents();
+        var returnsRequests = await requestService.GetActiveRequestByType(RequestTypeEnum.RETURNS);
+        var signupRequests = await requestService.GetActiveRequestByType(RequestTypeEnum.REGISTER);
+        
+        //Convertendo para DTO
+        var returnsRequestsDto = returnsRequests.Select(async r => new ReturnRequestDTO()
+        {
+            Id = r.Id,
+            CreatedAt = r.CreatedAt,
+            UpdatedAt = r.UpdatedAt,
+            Status = r.Status,
+            Type = r.Type,
+            User = r.User,
+            UserId = r.UserId,
+            Body = await requestService.ResolveRequestBody(r) as ReturnsRequestBody
+        });
+        var signupRequestsDto = signupRequests.Select(async r => new RegisterRequestDTO()
+        {
+            Id = r.Id,
+            CreatedAt = r.CreatedAt,
+            UpdatedAt = r.UpdatedAt,
+            Status = r.Status,
+            Type = r.Type,
+            User = r.User,
+            UserId = r.UserId,
+            Body = await requestService.ResolveRequestBody(r) as RegisterRequestBody
+        });
+        
+        //Criando o ViewModel
+        var viewModel = new AdminReportViewModel()
+        {
+            Books = await bookService.GetAllBooksAsync(),
+            Rents = rent,
+            Users = users,
+            SignUpRequests =  signupRequestsDto.Select(r => r.Result),
+            ReturnsRequests = returnsRequestsDto.Select(r => r.Result),
+        };
+        return View("Relatorios/Relatorios", viewModel);
+    }
+    
+    public IActionResult GetUsers()
+    {
+        
+        return PartialView("Relatorios/_PartialUsers");
+    }
+    
+    public IActionResult GetBooks()
+    {
+        return PartialView("Relatorios/_PartialBooks");
+    }
+
+    public IActionResult GetRents()
+    {
+        return PartialView("Relatorios/_PartialRents");
+    }
+}

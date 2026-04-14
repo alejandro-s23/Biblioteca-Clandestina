@@ -1,0 +1,37 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Petição de Acesso";
+}
+
+<div class="container d-flex align-items-center justify-content-center" style="min-height: 70vh;">
+    <div class="card card-manuscrito shadow-lg p-5 text-center" style="max-width: 600px; border-style: double; border-width: 4px;">
+        
+        <div class="mb-4">
+            <div class="display-1" style="color: var(--borda-couro); opacity: 0.8;">
+                <i class="bi bi-shield-lock"></i> 
+            </div>
+        </div>
+
+        <h2 class="titulo-manuscrito mb-3">PETIÇÃO RECEBIDA</h2>
+        
+        <div class="border-couro mb-4" style="border-bottom: 1px solid var(--borda-couro); width: 40%; margin: 0 auto;"></div>
+
+        <p class="fonte-manuscrito fs-5 italic">
+            "Vosso pedido de ingresso aos registros da Biblioteca foi selado e encaminhado ao <strong>Arquivista-Chefe</strong>."
+        </p>
+
+        <p class="text-muted small mt-4">
+            Aguarde a validação de vossas credenciais. Este processo é necessário para garantir a segurança dos manuscritos proibidos localizados em <strong>******</strong>.
+        </p>
+
+        <div class="mt-5">
+            <a asp-controller="Access" asp-action="Index" class="btn btn-manuscrito px-5">
+                RETORNAR AO PORTAL
+            </a>
+        </div>
+
+        <div class="mt-4 pt-3 border-top" style="border-color: rgba(160, 82, 45, 0.2) !important;">
+            <span class="small text-uppercase tracking-widest opacity-50">Status: AGUARDANDO_ASSINATURA_DO_ADMINISTRADOR</span>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,49 @@
+@{
+    ViewData["Title"] = "Relatorios";
+}
+
+<div class="container mt-4">
+    <h2 class="titulo-manuscrito mb-4">CENTRAL DE RELATÓRIOS</h2>
+
+    <ul class="nav nav-tabs border-clandestino" id="relatorioTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab">USUÁRIOS</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="books-tab" data-bs-toggle="tab" data-bs-target="#books" type="button" role="tab">LIVROS</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="rents-tab" data-bs-toggle="tab" data-bs-target="#rents" type="button" role="tab">EMPRÉSTIMOS</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="requests-tab" data-bs-toggle="tab" data-bs-target="#requests" type="button" role="tab">SOLICITAÇÕES</button>
+        </li>
+    </ul>
+
+    <div class="tab-content card-manuscrito p-4 border-top-0" id="relatorioTabsContent">
+        <div class="tab-pane fade show active" id="users" role="tabpanel">
+            <partial name="Relatorios/_PartialUsers"/>
+        </div>
+        <div class="tab-pane fade" id="books" role="tabpanel">
+            <partial name="Relatorios/_PartialBooks"/>
+        </div>
+        <div class="tab-pane fade" id="rents" role="tabpanel">
+            <partial name="Relatorios/_PartialRents"/>
+        </div>
+        <div class="tab-pane fade" id="requests" role="tabpanel">
+            <partial name="Relatorios/_PartialRequests"/>        
+        </div>
+    </div>
+</div>
+
+@section NavItems
+{
+    <li class="nav-item">
+        <a class="nav-link" asp-controller="Admin" asp-action="RegisterBook">REGISTRAR LIVRO</a>
+    </li>
+}
+
+@section Scripts
+{
+    <script src="/js/admin.js"></script>
+}

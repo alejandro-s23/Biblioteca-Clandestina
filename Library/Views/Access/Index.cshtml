@@ -1,0 +1,41 @@
+@model Library.Models.ViewModel.LoginViewModel
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Login";
+}
+
+<div class="container d-flex align-items-center justify-content-center" style="min-height: 80vh;">
+    <div class="card card-manuscrito shadow-lg p-5 w-100" style="max-width: 450px;">
+        <div class="text-center mb-4">
+            <h1 class="titulo-manuscrito">ACESSO À BIBLIOTECA</h1>
+            <div class="border-couro my-2" style="border-bottom: 2px solid var(--borda-couro); width: 60%; margin: 0 auto;"></div>
+        </div>
+
+        <form asp-action="Index" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger small italic mb-3"></div>
+
+            <div class="mb-4">
+                <label asp-for="Email" class="form-label">Identificador (E-mail)</label>
+                <input asp-for="Email" class="form-control input-manuscrito" placeholder="escriba@clandestino.com" />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-5">
+                <label asp-for="Password" class="form-label">Chave de Segurança</label>
+                <input asp-for="Password" type="password" class="form-control input-manuscrito" />
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+            <button type="submit" class="btn btn-manuscrito w-100 mb-3 py-2">
+                ENTRAR
+            </button>
+            
+            <div class="text-center mt-4">
+                <p class="small italic mb-1">Ainda não possui um registro?</p>
+                <a asp-controller="Access" asp-action="Register" class="text-decoration-none" style="color: var(--borda-couro); font-weight: bold;">
+                    SOLICITAR REGISTRO NA BIBLIOTECA
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

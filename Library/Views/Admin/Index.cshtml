@@ -1,0 +1,166 @@
+@using Microsoft.IdentityModel.Tokens
+@model Library.Models.ViewModel.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "PAINEL_DE_CONTROLE";
+}
+
+<div class="container mt-4">
+    <h2 class="titulo-manuscrito mb-4 text-center">ARQUIVO CENTRAL ADMINISTRATIVO</h2>
+
+    <div class="row mb-5">
+        <div class="col-md-4">
+            <div class="card card-manuscrito p-3 text-center border-couro">
+                <h6 class="text-muted">SOLICITAÇÕES PENDENTES</h6>
+                <p class="display-4 fonte-manuscrito">@Model.TotalPendingRequests</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card card-manuscrito p-3 text-center border-couro">
+                <h6 class="text-muted">EMPRÉSTIMOS ATIVOS</h6>
+                <p class="display-4 fonte-manuscrito">@Model.TotalActiveRents</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card card-manuscrito p-3 text-center border-couro">
+                <h6 class="text-muted">DISPONIBILIDADE ACERVO</h6>
+                <p class="display-4 fonte-manuscrito">@Model.AvailabilityRate.ToString("F0")%</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card card-manuscrito mb-5 p-4">
+        <h4 class="titulo-manuscrito mb-3" style="color: var(--borda-couro);">SOLICITAÇÕES DE CADASTRO</h4>
+        <table class="table table-sm table-hover italic">
+            <thead>
+            <tr>
+                <th>NOME</th>
+                <th>MATRÍCULA</th>
+                <th>AÇÃO</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var request in Model.PendingRequests) {
+                <tr>
+                    <td>@request.FirstName @request.LastName</td>
+                    <td>@request.Registration</td>
+                    <td>
+                        <a onclick="openDetails('@request.CPF')"
+                           class="btn btn-outline-primary">
+                            DETALHES
+                        </a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        @if (Model.TotalPendingRequests > 5)
+        {
+            <a class="fonte-manuscrito">Ver Mais...</a>
+        }
+    </div>
+
+    <div class="card card-manuscrito mb-5 p-4">
+        <h4 class="titulo-manuscrito mb-3" style="color: var(--borda-couro);">POSSES DE LIVROS ATIVOS</h4>
+        <table class="table table-sm table-hover">
+            <thead>
+            <tr>
+                <th>LIVRO</th>
+                <th>PORTADOR</th>
+                <th>DATA DA POSSE</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var rent in Model.ActiveRents) {
+                <tr>
+                    <td>@rent.Book?.Title</td>
+                    <td>@rent.User?.FirstName</td>
+                    <td>@rent.RentDate.ToString("dd/MM/yyyy")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        @if (Model.TotalActiveRents > 5)
+        {
+            <a class="fonte-manuscrito">Ver Mais...</a>
+        }
+    </div>
+</div>
+
+@foreach (var user in Model.PendingRequests)
+{
+    <div id="@user.CPF" class="modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-fluid">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">ENTREVISTA: @user.FirstName</h5>
+                    <button type="button" class="btn-close" onclick="closeDetails('@user.CPF')" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <table class="table table-hover italic">
+                            <thead>
+                            <tr>
+                                <th>PERGUNTADO</th>
+                                <th>RESPONDIDO</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>NOME COMPLETO</td>
+                                <td>@user.FirstName @user.LastName</td>
+                            </tr>
+                            <tr>
+                                <td>MATRÍCULA</td>
+                                <td>@user.Registration</td>
+                            </tr>
+                            <tr>
+                                <td>CIDADE DE RESIDÊNCIA</td>
+                                <td>@user.City</td>
+                            </tr>
+                            <tr>
+                                <td>BAIRRO</td>
+                                <td>@user.District</td>
+                            </tr>
+                            <tr>
+                                <td>ENDEREÇO</td>
+                                <td>@user.Address, @user.AddressNumber</td>
+                            </tr>
+                            @if (!user.Complement.IsNullOrEmpty())
+                            {
+                                <tr>
+                                    <td>COMPLEMENTO</td>
+                                    <td>@user.Complement</td>
+                                </tr>
+                            }
+                            <tr>
+                                <td>TELEFONE</td>
+                                <td>@user.Phone</td>
+                            </tr>
+                            <tr>
+                                <td>CORREIO ELETRÔNICO</td>
+                                <td>@user.Email</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-outline-success" asp-controller="Admin" asp-action="Approve" asp-route-id="@user.Id" >APROVAR</a>
+                    <button class="btn btn-outline-danger" onclick="closeDetails('@user.CPF')">ENCERRAR ENTREVISTA</button>
+                </div>
+                </div>
+        </div>
+    </div>
+}
+
+@section NavItems {
+    <li class="nav-item">
+        <a class="nav-link" asp-controller="Home" asp-action="Index">VISÃO CLIENTE</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" asp-controller="Admin" asp-action="Relatorios">RELATÓRIOS</a>
+    </li>
+    
+}
+
+<script src="js/admin.js"></script>
