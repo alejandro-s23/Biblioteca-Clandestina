@@ -141,7 +141,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-outline-danger" asp-controller="Admin" asp-action="ResetPass">RESETAR SENHA</button>
+                    <a class="btn btn-outline-success" asp-controller="Admin" asp-action="Approve" asp-route-id="@request.Id" >APROVAR</a>
+                    <a class="btn btn-outline-danger" asp-controller="Admin" asp-action="Reprove" asp-route-id="@request.Id" >NEGAR</a>
                 </div>
             </div>
         </div>

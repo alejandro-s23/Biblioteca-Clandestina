@@ -11,5 +11,8 @@ public interface IRequestService
     Task<IEnumerable<Request>> GetActiveRequestByType(RequestTypeEnum type);
     Task<RequestBodyObj> ResolveRequestBody(Request model);
     Task<IEnumerable<Request>> GetActiveRequests();
+    Task<(bool success, string message)> ApproveAsync(Guid id);
+    Task<(bool success, string message)> ApproveAsync(Request request);
+
 
 }

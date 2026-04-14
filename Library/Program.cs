@@ -3,12 +3,17 @@ using Library.Data.Interfaces;
 using Library.Services;
 using Library.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+//Configurando logger
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+builder.Host.UseSerilog();
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<LibraryContext>(options =>
@@ -41,29 +46,57 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IRentalService, RentalService>();
 builder.Services.AddScoped<IRequestService, RequestService>();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+try
 {
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
+    Log.Information("Starting up");
+    var app = builder.Build();
+    
+    app.UseSerilogRequestLogging();
+
+    // Configure the HTTP request pipeline.
+    if (!app.Environment.IsDevelopment())
+    {
+        app.UseExceptionHandler("/Home/Error");
+        app.UseHsts();
+    }
+
+    app.UseHttpsRedirection();
+    app.UseRouting();
+
+    app.UseSession();
+    app.UseAuthentication();
+    app.UseAuthorization();
+
+    app.MapStaticAssets();
+
+    app.MapControllerRoute(
+            name: "default",
+            pattern: "{controller=Access}/{action=Index}/{id?}")
+        .WithStaticAssets();
+    
+    // --- BLOCO DE MIGRAÇÃO AUTOMÁTICA ---
+    // Executa apenas se não estiver em modo de Design (geração de scripts)
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        var context = services.GetRequiredService<LibraryContext>();
+        
+        // Aplica migrações pendentes no banco de produção
+        // Isso resolve o seu problema de criar as tabelas no MonsterASP
+        if (context.Database.GetPendingMigrations().Any())
+        {
+            context.Database.Migrate();
+        }
+    }
+    // -------------------------------------
+
+    app.Run();
 }
-
-app.UseHttpsRedirection();
-app.UseRouting();
-
-app.UseSession();
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapStaticAssets();
-
-app.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Access}/{action=Index}/{id?}")
-    .WithStaticAssets();
-
-
-app.Run();
+catch(Exception ex)
+{
+    Log.Fatal(ex, "An unhandled exception occurred during startup");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

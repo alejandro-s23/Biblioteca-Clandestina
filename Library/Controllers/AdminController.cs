@@ -10,6 +10,7 @@ namespace Library.Controllers;
 
 [Authorize(Roles = "Admin")]
 public class AdminController(
+    ILogger<AdminController> logger,
     IUserService userService,
     IRentalService rentalService,
     IBookService bookService,
@@ -39,8 +40,12 @@ public class AdminController(
 
     public async Task<IActionResult> Approve(Guid id)
     {
-        await userService.ApproveUser(id);
-        return RedirectToAction("Index","Admin");
+        var result = await requestService.ApproveAsync(id);
+        if (!result.success)
+        {
+            ViewData["ErrorMessage"] = result.message;
+        }
+        return RedirectToAction("Relatorios", "Admin");
     }
     
     [HttpGet]

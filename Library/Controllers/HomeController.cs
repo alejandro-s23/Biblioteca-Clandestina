@@ -20,7 +20,7 @@ public class HomeController(IRentalService rentalService, IUserService userServi
         // Verificando se o usuário logado tem aluguel ativo
         var userId = User.GetUserId();
         var userHasBook = await userService.HasRentedBookAsync(userId);
-        ViewBag.UserHasBook = userHasBook;
+        ViewBag.UserHasBook = userHasBook.success;
         
         //Filtra os livros
         var books = await bookService.GetOrderedBooksAsync(searchString, sortOrder, sortField);

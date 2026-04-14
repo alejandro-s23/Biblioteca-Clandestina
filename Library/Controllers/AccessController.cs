@@ -70,11 +70,16 @@ public class AccessController(IUserService userService) : Controller
     {
         if (ModelState.IsValid)
         {
+            var result = await userService.RegisterAsync(client);
             // O GUID e os booleanos padrão já estão definidos no seu Model 
-            if(await userService.RegisterAsync(client))
-                return RedirectToAction("Pending", "Access");
+            if (!result.success)
+            {
+                TempData["ErrorMessage"] = result.message;
+                return View();
+            }
+                
         }
-        return View(client);
+        return RedirectToAction("Pending", "Access");
     }
     
     [HttpGet]
