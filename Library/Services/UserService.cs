@@ -41,9 +41,9 @@ public class UserService(IBookRepository bookRepository, IUserRepository userRep
         }
     }
 
-    public async Task<bool> HasRentedBookAsync(Guid userId)
+    public async Task<(bool success, string message)> HasRentedBookAsync(Guid userId)
     {
-        return await bookRepository.AnyBookTenantAsync(userId); 
+        return (await bookRepository.AnyBookTenantAsync(userId), string.Empty); 
     }
 
     public async Task<User?> GetUserAsync(string email, string password)
@@ -56,9 +56,9 @@ public class UserService(IBookRepository bookRepository, IUserRepository userRep
         return userRepository.GetByIdAsync(userId);
     }
 
-    public async Task<bool> RegisterAsync(User client)
+    public async Task<(bool success, string message)> RegisterAsync(User client)
     {
-        return await userRepository.Add(client);
+        return (await userRepository.Add(client), string.Empty);
     }
 
     public async Task<IEnumerable<User>> GetUsersAsync(int size = 0)
@@ -80,15 +80,15 @@ public class UserService(IBookRepository bookRepository, IUserRepository userRep
         return await userRepository.GetActiveUsersListAsync(size);
     }
 
-    public async Task<bool> ApproveUser(Guid id)
+    public async Task<(bool success, string message)> ApproveUser(Guid id)
     {
         var client = await userRepository.GetByIdAsync(id);
         if (client != null)
         {
             client.IsApproved = true;
-            return await userRepository.Update(client);
+            return (await userRepository.Update(client), string.Empty);
         }
-        return false;
+        return (false, "Erro inesperado ao aprovar o usuário.");
     }
 
     public async Task<IEnumerable<User>> GetAOrderedUsersAsync(string searchString, string sortOrder, string sortField)

@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Library.Models;
+using Library.Models.Enums;
 using Library.Models.ViewModel;
 using Library.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
@@ -8,7 +9,10 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Library.Controllers;
 
-public class AccessController(IUserService userService) : Controller
+public class AccessController(
+    IUserService userService,
+    IRequestService requestService
+    ) : Controller
 {
     [HttpGet]
     public IActionResult Index()
@@ -70,11 +74,23 @@ public class AccessController(IUserService userService) : Controller
     {
         if (ModelState.IsValid)
         {
+            var result = await userService.RegisterAsync(client);
             // O GUID e os booleanos padrão já estão definidos no seu Model 
-            if(await userService.RegisterAsync(client))
-                return RedirectToAction("Pending", "Access");
+            if (!result.success)
+            {
+                TempData["ErrorMessage"] = result.message;
+                return View();
+            }
+
+            var createSignupRequest = await requestService
+                .CreateRequestAsync(client.Id, RequestTypeEnum.REGISTER, new RegisterRequestBody());
+            if (!createSignupRequest.success)
+            {
+                TempData["ErrorMessage"] = createSignupRequest.message;
+                return View();
+            }
         }
-        return View(client);
+        return RedirectToAction("Pending", "Access");
     }
     
     [HttpGet]

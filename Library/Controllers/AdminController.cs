@@ -10,6 +10,7 @@ namespace Library.Controllers;
 
 [Authorize(Roles = "Admin")]
 public class AdminController(
+    ILogger<AdminController> logger,
     IUserService userService,
     IRentalService rentalService,
     IBookService bookService,
@@ -20,12 +21,24 @@ public class AdminController(
     {
         if (!User.IsInRole("Admin"))
             return RedirectToAction("Index", "Access");
+        var signupRequests = await requestService.GetActiveRequestByType(RequestTypeEnum.REGISTER);
+        
+        var signupRequestsDto = signupRequests.Select(async r => new RegisterRequestDTO()
+        {
+            Id = r.Id,
+            CreatedAt = r.CreatedAt,
+            UpdatedAt = r.UpdatedAt,
+            Status = r.Status,
+            Type = r.Type,
+            User = r.User,
+            UserId = r.UserId,
+            Body = await requestService.ResolveRequestBody(r) as RegisterRequestBody
+        });
         
         var viewModel = new AdminDashboardViewModel
         {
             // Busca solicitações pendentes
-            PendingRequests = await userService.GetActiveUsersAsync(5),
-
+            PendingRequests = await Task.WhenAll(signupRequestsDto),
             // Busca aluguéis sem data de retorno
             ActiveRents = await rentalService.GetActiveRents(5),
 
@@ -39,8 +52,12 @@ public class AdminController(
 
     public async Task<IActionResult> Approve(Guid id)
     {
-        await userService.ApproveUser(id);
-        return RedirectToAction("Index","Admin");
+        var result = await requestService.ApproveAsync(id);
+        if (!result.success)
+        {
+            ViewData["ErrorMessage"] = result.message;
+        }
+        return RedirectToAction("Relatorios", "Admin");
     }
     
     [HttpGet]
@@ -69,15 +86,6 @@ public class AdminController(
     {
         
         var users = await userService.GetActiveUsersAsync();
-        /*
-        var usersDtos = users.Select(x => new SimpleUserDTO()
-        {
-            Id = x.Id,
-            Approved = x.IsApproved,
-            Name = x.FirstName + " " + x.LastName,
-            Registration = x.Registration
-        });
-        */
         //Lendo os dados para o viewmodel
         var rent = await rentalService.GetActiveRents();
         var returnsRequests = await requestService.GetActiveRequestByType(RequestTypeEnum.RETURNS);
@@ -113,8 +121,8 @@ public class AdminController(
             Books = await bookService.GetAllBooksAsync(),
             Rents = rent,
             Users = users,
-            SignUpRequests =  signupRequestsDto.Select(r => r.Result),
-            ReturnsRequests = returnsRequestsDto.Select(r => r.Result),
+            SignUpRequests =  await Task.WhenAll(signupRequestsDto),
+            ReturnsRequests = await Task.WhenAll(returnsRequestsDto),
         };
         return View("Relatorios/Relatorios", viewModel);
     }

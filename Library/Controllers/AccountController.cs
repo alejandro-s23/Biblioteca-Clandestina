@@ -84,7 +84,7 @@ public class AccountController(IUserService userService, IRentalService rentalSe
     [HttpPost]
     public async Task<IActionResult> Return(Guid bookId)
     {
-        /*
+        
         var activeRent = await rentalService.GetActiveRentAsync(User.GetUserId());
         if (activeRent != null)
         {
@@ -95,18 +95,15 @@ public class AccountController(IUserService userService, IRentalService rentalSe
                 RentDate =  activeRent.RentDate,
                 RentId = activeRent.Id,
             };
-            var result = await requestService.CreateRequestAsync(User.GetUserId(), requestBody);
+            var result = await requestService.CreateRequestAsync(User.GetUserId(), RequestTypeEnum.RETURNS, requestBody);
             if (!result.success)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(result.message);
-                Console.ResetColor();
-                return RedirectToAction("Index", User.GetHomePage());
+                TempData["ErrorMessage"] = "Ocorreu um erro ao registrar a solicitação";
+                return RedirectToAction("Profile");
 
             }
         }
-        */
-        TempData["ErrorMessage"] = "Ocorreu um erro na chamado";
+    
         return RedirectToAction("Profile");
     }
 }

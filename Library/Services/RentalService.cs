@@ -6,7 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Library.Services;
 
-public class RentalService(IBookRepository bookRepository, IBookRentRepository rentRepository, IUserRepository userRepository) : IRentalService
+public class RentalService(
+    IBookRepository bookRepository, 
+    IBookRentRepository rentRepository, 
+    ILogger<RentalService> logger) : IRentalService
 {
     public async Task<(bool Success, string Message)> RentBookAsync(Guid bookId, Guid userId)
     {
@@ -49,7 +52,6 @@ public class RentalService(IBookRepository bookRepository, IBookRentRepository r
         var book = await bookRepository.GetByIdAsync(bookId);
         if (book?.CurrentRent == null)
             return (false, "Não há registro de posse ativa para este volume.");
-
         // Encerra o aluguel atual
         book.CurrentRent.ReturnDate = DateTime.Now;
     
@@ -59,6 +61,7 @@ public class RentalService(IBookRepository bookRepository, IBookRentRepository r
         
         if(await bookRepository.Update(book))
         {
+            logger.LogInformation($"Livro {book.Title} foi devolvido.");
             return (true, "O manuscrito retornou ao acervo.");
 
         }

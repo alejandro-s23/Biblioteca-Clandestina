@@ -1,16 +1,19 @@
-using System.Reflection;
 using System.Text.Json;
-using Library.Data;
 using Library.Data.Interfaces;
 using Library.Models;
-using Library.Models.DTO;
 using Library.Models.Enums;
-using Library.Models.ViewModel.DTO;
 using Library.Services.Interfaces;
 
 namespace Library.Services;
 
-public class RequestService(IRequestRepository requestRepository, IBookRepository bookRepository, IBookRentRepository bookRentRepository) : IRequestService
+public class RequestService(
+    ILogger<RequestService> logger,
+    IRequestRepository requestRepository, 
+    IBookRepository bookRepository, 
+    IBookRentRepository bookRentRepository,
+    IUserService userService,
+    IRentalService rentalService
+    ) : IRequestService
 {
     public async Task<(bool success, string message)> CreateRequestAsync(Guid userId, RequestTypeEnum type ,RequestBodyObj body)
     {
@@ -55,6 +58,13 @@ public class RequestService(IRequestRepository requestRepository, IBookRepositor
             case RequestTypeEnum.REGISTER:
                 obj = MapTo<RegisterRequestBody>(model.Body);
                 var signup = obj as RegisterRequestBody;
+                //Validando a request
+                if (signup == null)
+                    logger.LogError($"Request {model.Id} was not found");
+                //Validando o obj User
+                if (model.User == null)
+                    logger.LogError($"User was not found");
+                //Atribuindo valores ao objBody
                 return signup;
             case RequestTypeEnum.RETURNS:
                 obj = MapTo<ReturnsRequestBody>(model.Body);
@@ -66,10 +76,41 @@ public class RequestService(IRequestRepository requestRepository, IBookRepositor
                 throw new ArgumentOutOfRangeException(nameof(model.Type));
         }
     }
-
+    
     public Task<IEnumerable<Request>> GetActiveRequests()
     {
         return requestRepository.GetActiveRequests();
+    }
+
+    public async Task<(bool success, string message)> ApproveAsync(Guid id)
+    {
+
+        var result = await ApproveAsync(await requestRepository.GetByIdAsync(id));
+        if (!result.success)
+        {
+            logger.LogError($"Request {id} was not found");
+            return (false, "Request was not found");
+        }
+        return result;
+    }
+
+    public async Task<(bool success, string message)> ApproveAsync(Request? request)
+    {
+        
+        if (request == null) return (false, "Request is null");
+
+        request.Status = RequestStatusEnum.APPROVED;
+        request.UpdatedAt = DateTime.Now;
+        switch (request.Type)
+        {
+            case RequestTypeEnum.REGISTER:
+                return await userService.ApproveUser(request.UserId);
+            case RequestTypeEnum.RETURNS:
+                var requestBodyReturn = await ResolveRequestBody(request);
+                return await rentalService.ReturnBookAsync(((ReturnsRequestBody)requestBodyReturn).BookId);
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
     }
 
     private T MapTo<T>(Dictionary<string, object?> dict) where T : RequestBodyObj

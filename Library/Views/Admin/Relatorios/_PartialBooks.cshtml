@@ -64,7 +64,7 @@
                         <td>@book.Title</td>
                         <td>@book.Author</td>
                         <td>
-                            <a class="btn btn-outline-primary">DETALHES</a>
+                            <a class="btn btn-outline-primary" onclick="openDetails('@book.Id')">DETALHES</a>
                         </td>
                     </tr>
                 }
@@ -73,3 +73,58 @@
         </table>
     </div>
 </div>
+@if (Model.Users != null)
+{
+    @foreach (var book in Model.Books)
+    {
+    <div id="@book.Id" class="modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-fluid">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">LIVRO: @book.Title</h5>
+                    <button type="button" class="btn-close" onclick="closeDetails('@book.Id')" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <table class="table table-hover italic">
+                            <thead>
+                            <tr>
+                                <th>CAMPO</th>
+                                <th>REGISTRO</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>AUTOR</td>
+                                <td>@book.Author</td>
+                            </tr>
+                            <tr>
+                                <td>DISPONIBILIDADE</td>
+                                @if (book.Available)
+                                {
+                                    <td class="text-success">DISPONÍVEL</td>
+                                }
+                                else
+                                {
+                                    <td class="text-danger">RESERVADO</td>
+                                }
+                            </tr>
+                            @if (book is { Available: false, CurrentRent: not null })
+                            {
+                                <tr>
+                                    <td>PORTADOR</td>
+                                    <td>@book.CurrentRent.User.FirstName @book.CurrentRent.User.LastName</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-outline-primary" onclick="closeDetails('@book.Id')" >FECHAR</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+}

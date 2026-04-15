@@ -1,4 +1,3 @@
-@using Microsoft.IdentityModel.Tokens
 @model Library.Models.ViewModel.AdminReportViewModel
 
 <div class="container">
@@ -47,29 +46,30 @@
     -->
     <div class="card card-manuscrito mb-5">
         <h4 class="titulo-manuscrito">PETIÇÕES DE REGISTRO</h4>
-        <table class="table table-sm table table-hover italic">
-            <thead>
+    <table class="table table-sm table table-hover italic">
+        <thead>
+        <tr>
+            <th>NOME</th>
+            <th>CRIADA</th>
+            <th>AÇÃO</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var request in Model.SignUpRequests)
+        {
+
             <tr>
-                <th>NOME</th>
-                <th>CRIADA</th>
-                <th>AÇÃO</th>
+
+                <td>@request.User.FirstName @request.User.LastName</td>
+                <td>@request.CreatedAt</td>
+                <td>
+                    <a onclick="openDetails('@request.Id')" class="btn btn-outline-primary">DETALHES</a>
+                </td>
             </tr>
-            </thead>
-            <tbody>
-            @foreach (var request in Model.SignUpRequests)
-            {
-
-                <tr>
-
-                    <td>@request.User.FirstName @request.User.LastName</td>
-                    <td>@request.CreatedAt</td>
-                    <td>
-                        <a onclick="openDetails('@request.Id')" class="btn btn-outline-primary">DETALHES</a>
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
+        }
+        </tbody>
+    </table>
+    
     </div>
     <div class="card card-manuscrito mb-5">
         <div class="align-items-center">
@@ -141,10 +141,77 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-outline-danger" asp-controller="Admin" asp-action="ResetPass">RESETAR SENHA</button>
+                    <a class="btn btn-outline-success" asp-controller="Admin" asp-action="Approve" asp-route-id="@request.Id" >APROVAR</a>
+                    <a class="btn btn-outline-danger" asp-controller="Admin" asp-action="Reprove" asp-route-id="@request.Id" >NEGAR</a>
                 </div>
             </div>
         </div>
     </div>
     }
+}
+@foreach (var requestDto in Model.SignUpRequests)
+{
+    <div id="@requestDto.Id" class="modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-fluid">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">ENTREVISTA: @requestDto.User.FirstName</h5>
+                    <button type="button" class="btn-close" onclick="closeDetails('@requestDto.Id')" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <table class="table table-hover italic">
+                            <thead>
+                            <tr>
+                                <th>PERGUNTADO</th>
+                                <th>RESPONDIDO</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>NOME COMPLETO</td>
+                                <td>@requestDto.User.FirstName @requestDto.User.LastName</td>
+                            </tr>
+                            <tr>
+                                <td>MATRÍCULA</td>
+                                <td>@requestDto.User.Registration</td>
+                            </tr>
+                            <tr>
+                                <td>CIDADE DE RESIDÊNCIA</td>
+                                <td>@requestDto.User.City</td>
+                            </tr>
+                            <tr>
+                                <td>BAIRRO</td>
+                                <td>@requestDto.User.District</td>
+                            </tr>
+                            <tr>
+                                <td>ENDEREÇO</td>
+                                <td>@requestDto.User.Address, @requestDto.User.AddressNumber</td>
+                            </tr>
+                            @if (!string.IsNullOrEmpty(requestDto.User.Complement))
+                            {
+                                <tr>
+                                    <td>COMPLEMENTO</td>
+                                    <td>@requestDto.User.Complement</td>
+                                </tr>
+                            }
+                            <tr>
+                                <td>TELEFONE</td>
+                                <td>@requestDto.User.Phone</td>
+                            </tr>
+                            <tr>
+                                <td>CORREIO ELETRÔNICO</td>
+                                <td>@requestDto.User.Email</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-outline-success" asp-controller="Admin" asp-action="Approve" asp-route-id="@requestDto.Id" >APROVAR</a>
+                    <button class="btn btn-outline-danger" onclick="closeDetails('@requestDto.Id')">ENCERRAR ENTREVISTA</button>
+                </div>
+                </div>
+        </div>
+    </div>
 }

@@ -27,16 +27,25 @@ public class RequestRepository(LibraryContext context) :
 
     public async Task<IEnumerable<Request>> GetRequestsByType(RequestTypeEnum type)
     {
-        return await DbSet.Where(r => r.Type == type).ToListAsync();
+        return await DbSet
+            .Where(r => r.Type == type)
+            .Include(r => r.User)
+            .ToListAsync();
     }
     
     public async Task<IEnumerable<Request>> GetActiveRequestsByType(RequestTypeEnum type)
     {
-        return await DbSet.Where(r => r.Type == type && r.Status == RequestStatusEnum.PENDING).ToListAsync();
+        return await DbSet
+            .Where(r => r.Type == type && r.Status == RequestStatusEnum.PENDING)
+            .Include(r => r.User)
+            .ToListAsync();
     }
 
     public async Task<IEnumerable<Request>> GetActiveRequests()
     {
-        return await DbSet.Where(r => r.Status == RequestStatusEnum.PENDING).ToListAsync();
+        return await DbSet
+            .Where(r => r.Status == RequestStatusEnum.PENDING)
+            .Include(r => r.User)
+            .ToListAsync();
     }
 }
