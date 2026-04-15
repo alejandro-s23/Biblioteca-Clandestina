@@ -39,12 +39,12 @@
             </tr>
             </thead>
             <tbody>
-            @foreach (var request in Model.PendingRequests) {
+            @foreach (var requestDto in Model.PendingRequests) {
                 <tr>
-                    <td>@request.FirstName @request.LastName</td>
-                    <td>@request.Registration</td>
+                    <td>@requestDto.User.FirstName @requestDto.User.LastName</td>
+                    <td>@requestDto.User.Registration</td>
                     <td>
-                        <a onclick="openDetails('@request.CPF')"
+                        <a onclick="openDetails('@requestDto.Id')"
                            class="btn btn-outline-primary">
                             DETALHES
                         </a>
@@ -86,14 +86,14 @@
     </div>
 </div>
 
-@foreach (var user in Model.PendingRequests)
+@foreach (var requestDto in Model.PendingRequests)
 {
-    <div id="@user.CPF" class="modal" tabindex="-1">
+    <div id="@requestDto.Id" class="modal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-fluid">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">ENTREVISTA: @user.FirstName</h5>
-                    <button type="button" class="btn-close" onclick="closeDetails('@user.CPF')" aria-label="Close"></button>
+                    <h5 class="modal-title">ENTREVISTA: @requestDto.User.FirstName</h5>
+                    <button type="button" class="btn-close" onclick="closeDetails('@requestDto.Id')" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="container">
@@ -107,46 +107,46 @@
                             <tbody>
                             <tr>
                                 <td>NOME COMPLETO</td>
-                                <td>@user.FirstName @user.LastName</td>
+                                <td>@requestDto.User.FirstName @requestDto.User.LastName</td>
                             </tr>
                             <tr>
                                 <td>MATRÍCULA</td>
-                                <td>@user.Registration</td>
+                                <td>@requestDto.User.Registration</td>
                             </tr>
                             <tr>
                                 <td>CIDADE DE RESIDÊNCIA</td>
-                                <td>@user.City</td>
+                                <td>@requestDto.User.City</td>
                             </tr>
                             <tr>
                                 <td>BAIRRO</td>
-                                <td>@user.District</td>
+                                <td>@requestDto.User.District</td>
                             </tr>
                             <tr>
                                 <td>ENDEREÇO</td>
-                                <td>@user.Address, @user.AddressNumber</td>
+                                <td>@requestDto.User.Address, @requestDto.User.AddressNumber</td>
                             </tr>
-                            @if (!user.Complement.IsNullOrEmpty())
+                            @if (!requestDto.User.Complement.IsNullOrEmpty())
                             {
                                 <tr>
                                     <td>COMPLEMENTO</td>
-                                    <td>@user.Complement</td>
+                                    <td>@requestDto.User.Complement</td>
                                 </tr>
                             }
                             <tr>
                                 <td>TELEFONE</td>
-                                <td>@user.Phone</td>
+                                <td>@requestDto.User.Phone</td>
                             </tr>
                             <tr>
                                 <td>CORREIO ELETRÔNICO</td>
-                                <td>@user.Email</td>
+                                <td>@requestDto.User.Email</td>
                             </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a class="btn btn-outline-success" asp-controller="Admin" asp-action="Approve" asp-route-id="@user.Id" >APROVAR</a>
-                    <button class="btn btn-outline-danger" onclick="closeDetails('@user.CPF')">ENCERRAR ENTREVISTA</button>
+                    <a class="btn btn-outline-success" asp-controller="Admin" asp-action="Approve" asp-route-id="@requestDto.Id" >APROVAR</a>
+                    <button class="btn btn-outline-danger" onclick="closeDetails('@requestDto.Id')">ENCERRAR ENTREVISTA</button>
                 </div>
                 </div>
         </div>

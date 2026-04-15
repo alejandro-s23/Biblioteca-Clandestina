@@ -9,7 +9,7 @@ public class ReturnRequestDTO
     public User? User { get; set; }
     public RequestTypeEnum Type { get; set; }
     public ReturnsRequestBody? Body { get; set; }
-    public RequestStatusEnum Status { get; set; } = RequestStatusEnum.PENDING;
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public RequestStatusEnum Status { get; set; }
+    public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 }

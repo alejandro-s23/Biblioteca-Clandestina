@@ -1,3 +1,5 @@
+using Library.Models.DTO;
+
 namespace Library.Models.ViewModel;
 
 public class AdminDashboardViewModel
@@ -14,7 +16,7 @@ public class AdminDashboardViewModel
     }
 
     // Resumo de Solicitações
-    public IEnumerable<User>? PendingRequests { get; set; }
+    public IEnumerable<RegisterRequestDTO>? PendingRequests { get; set; }
     public int TotalPendingRequests
     {
         get

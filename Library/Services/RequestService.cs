@@ -58,6 +58,13 @@ public class RequestService(
             case RequestTypeEnum.REGISTER:
                 obj = MapTo<RegisterRequestBody>(model.Body);
                 var signup = obj as RegisterRequestBody;
+                //Validando a request
+                if (signup == null)
+                    logger.LogError($"Request {model.Id} was not found");
+                //Validando o obj User
+                if (model.User == null)
+                    logger.LogError($"User was not found");
+                //Atribuindo valores ao objBody
                 return signup;
             case RequestTypeEnum.RETURNS:
                 obj = MapTo<ReturnsRequestBody>(model.Body);
@@ -93,7 +100,7 @@ public class RequestService(
         if (request == null) return (false, "Request is null");
 
         request.Status = RequestStatusEnum.APPROVED;
-        
+        request.UpdatedAt = DateTime.Now;
         switch (request.Type)
         {
             case RequestTypeEnum.REGISTER:

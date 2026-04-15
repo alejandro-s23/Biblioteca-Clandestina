@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Library.Models;
+using Library.Models.Enums;
 using Library.Models.ViewModel;
 using Library.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
@@ -8,7 +9,10 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Library.Controllers;
 
-public class AccessController(IUserService userService) : Controller
+public class AccessController(
+    IUserService userService,
+    IRequestService requestService
+    ) : Controller
 {
     [HttpGet]
     public IActionResult Index()
@@ -77,7 +81,14 @@ public class AccessController(IUserService userService) : Controller
                 TempData["ErrorMessage"] = result.message;
                 return View();
             }
-                
+
+            var createSignupRequest = await requestService
+                .CreateRequestAsync(client.Id, RequestTypeEnum.REGISTER, new RegisterRequestBody());
+            if (!createSignupRequest.success)
+            {
+                TempData["ErrorMessage"] = createSignupRequest.message;
+                return View();
+            }
         }
         return RedirectToAction("Pending", "Access");
     }

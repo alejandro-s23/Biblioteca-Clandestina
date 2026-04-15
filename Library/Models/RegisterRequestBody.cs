@@ -4,5 +4,4 @@ namespace Library.Models;
 
 public class RegisterRequestBody : RequestBodyObj
 {
-    public User? User { get; set; }
 }
