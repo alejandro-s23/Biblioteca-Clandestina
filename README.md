@@ -15,7 +15,7 @@
 ## 🚀 Tecnologias Utilizadas
 ### Back-end
 
-Linguagem: C# (.NET 8.0)
+Linguagem: C# (.NET 10.0)
 
 Framework: ASP.NET Core MVC
 
