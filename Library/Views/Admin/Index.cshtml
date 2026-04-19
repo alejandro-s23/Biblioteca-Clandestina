@@ -1,7 +1,7 @@
 @using Microsoft.IdentityModel.Tokens
 @model Library.Models.ViewModel.AdminDashboardViewModel
 @{
-    ViewData["Title"] = "PAINEL_DE_CONTROLE";
+    ViewData["Title"] = "Painel de Controle";
 }
 
 <div class="container mt-4">
@@ -55,7 +55,7 @@
         </table>
         @if (Model.TotalPendingRequests > 5)
         {
-            <a class="fonte-manuscrito">Ver Mais...</a>
+            <a class="fonte-manuscrito" asp-action="Relatorios">Ver Mais...</a>
         }
     </div>
 
@@ -81,7 +81,7 @@
         </table>
         @if (Model.TotalActiveRents > 5)
         {
-            <a class="fonte-manuscrito">Ver Mais...</a>
+            <a class="fonte-manuscrito" asp-action="Relatorios">Ver Mais...</a>
         }
     </div>
 </div>
@@ -146,7 +146,7 @@
                 </div>
                 <div class="modal-footer">
                     <a class="btn btn-outline-success" asp-controller="Admin" asp-action="Approve" asp-route-id="@requestDto.Id" >APROVAR</a>
-                    <button class="btn btn-outline-danger" onclick="closeDetails('@requestDto.Id')">ENCERRAR ENTREVISTA</button>
+                    <button class="btn btn-outline-primary" onclick="closeDetails('@requestDto.Id')">ENCERRAR ENTREVISTA</button>
                 </div>
                 </div>
         </div>

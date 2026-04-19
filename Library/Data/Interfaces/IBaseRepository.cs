@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore.Query;
+
 namespace Library.Data.Interfaces;
 
 public interface IBaseRepository<T> where T : class

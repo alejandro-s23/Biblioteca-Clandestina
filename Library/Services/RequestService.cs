@@ -113,6 +113,23 @@ public class RequestService(
         }
     }
 
+    public async Task<int> GetPendingRequestsCountAsync(RequestTypeEnum type)
+    {
+        return await requestRepository.GetPendingRequestsCountAsync(type);
+    }
+
+    public async Task<(bool success, string message)> DeleteByBookIdAsync(Guid bookId)
+    {
+        //Verificando se o livro existe
+        if (await bookRepository.ExistsAsync(bookId))
+            return (false, "Livro não encontrado!");
+        //Executando query de delete
+        var result = await requestRepository
+            .DeleteRequestsByObjIdAsync(bookId,RequestTypeEnum.RETURNS);
+        
+        return result;
+    }
+
     private T MapTo<T>(Dictionary<string, object?> dict) where T : RequestBodyObj
     {
         var json = JsonSerializer.Serialize(dict);

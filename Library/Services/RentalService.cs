@@ -49,7 +49,7 @@ public class RentalService(
 
     public async Task<(bool Success, string Message)> ReturnBookAsync(Guid bookId)
     {
-        var book = await bookRepository.GetByIdAsync(bookId);
+        var book = await bookRepository.GetByIdLoadedAsync(bookId);
         if (book?.CurrentRent == null)
             return (false, "Não há registro de posse ativa para este volume.");
         // Encerra o aluguel atual
@@ -84,5 +84,10 @@ public class RentalService(
         var allRentsAsync = rents.ToList();
         var orderedEnumerable = allRentsAsync.OrderByDescending(x => x.RentDate);
         return orderedEnumerable;
+    }
+
+    public async Task<int> GetActiveRentsCountAsync()
+    {
+        return await rentRepository.GetActiveRentsCountAsync();
     }
 }

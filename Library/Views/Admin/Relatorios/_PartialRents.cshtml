@@ -49,8 +49,8 @@
         <table class="table table-sm table table-hover italic">
             <thead>
             <tr>
-                <th>NOME</th>
                 <th>TÍTULO</th>
+                <th>NOME</th>
                 <th>AÇÃO</th>
             </tr>
             </thead>
@@ -59,9 +59,8 @@
             {
 
                 <tr>
-
-                    <td>@rent.User.FirstName @rent.User.LastName</td>
                     <td>@rent.Book.Title</td>
+                    <td>@rent.User.FirstName @rent.User.LastName</td>
                     <td>
                         <a onclick="openDetails('@rent.Id')" class="btn btn-outline-primary">DETALHES</a>
                     </td>
@@ -75,64 +74,87 @@
 {
     foreach (var rent in Model.Rents)
     {
-    <div id="@rent.Id" class="modal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-fluid">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">REGISTRO EMPRÉSTIMO</h5>
-                    <button type="button" class="btn-close" onclick="closeDetails('@rent.Id')" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="container">
-                        <table class="table table-hover italic">
-                            <thead>
-                            <tr>
-                                <th>CAMPO</th>
-                                <th>DADOS</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>PORTADOR</td>
-                                <td>@rent.User.FirstName @rent.User.LastName</td>
-                            </tr>
-                            <tr>
-                                <td>LIVRO</td>
-                                <td>@rent.Book.Title</td>
-                            </tr>
-                            <tr>
-                                <td>AUTOR</td>
-                                <td>@rent.Book.Author</td>
-                            </tr>
-                            <tr>
-                                <td>DATA DO EMPRÉSTIMO</td>
-                                <td>@rent.RentDate</td>
-                            </tr>
-                            <tr>
-                                <td>DIAS FORA</td>
-                                <td>@rent.RentTimeDays</td>
-                            </tr>
-                            @if (@rent.ReturnDate != null)
-                            {
-                                <tr>
-                                    <td>DATA DA ENTREGA</td>
-                                    <td>@rent.ReturnDate</td>
-                                </tr>
-                            }
-                            <tr>
-                                <td>RETORNO PREVISTO</td>
-                                <td>@rent.ExpectedReturnDate</td>
-                            </tr>
-                            
-                            </tbody>
-                        </table>
+        <div id="@rent.Id" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered modal-fluid">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">REGISTRO EMPRÉSTIMO</h5>
+                        <button type="button" class="btn-close" onclick="closeDetails('@rent.Id')" aria-label="Close"></button>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-outline-primary" onclick="closeDetails('@rent.Id')">FECHAR</button>
+                    <div class="modal-body">
+                        <div class="container">
+                            <table class="table table-hover italic">
+                                <thead>
+                                <tr>
+                                    <th>CAMPO</th>
+                                    <th>DADOS</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>PORTADOR</td>
+                                    <td>@rent.User.FirstName @rent.User.LastName</td>
+                                </tr>
+                                <tr>
+                                    <td>LIVRO</td>
+                                    <td>@rent.Book.Title</td>
+                                </tr>
+                                <tr>
+                                    <td>AUTOR</td>
+                                    <td>@rent.Book.Author</td>
+                                </tr>
+                                <tr>
+                                    <td>DATA DO EMPRÉSTIMO</td>
+                                    <td>@rent.RentDate</td>
+                                </tr>
+                                <tr>
+                                    <td>DIAS FORA</td>
+                                    <td>@rent.RentTimeDays</td>
+                                </tr>
+                                @if (@rent.ReturnDate != null)
+                                {
+                                    <tr>
+                                        <td>DATA DA ENTREGA</td>
+                                        <td>@rent.ReturnDate</td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <td>RETORNO PREVISTO</td>
+                                    <td>@rent.ExpectedReturnDate</td>
+                                </tr>
+                            
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-outline-danger" onclick="openDetails('@rent.GetHashCode()')">FORÇAR DEVOLUÇÃO</a>
+                        <button class="btn btn-outline-primary" onclick="closeDetails('@rent.Id')">FECHAR</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+        //Modal de confirmação para forças devolução empréstimo
+        <div id="@rent.GetHashCode()" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered modal-fluid">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Tem certeza disso?</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <p class="text-clandestino">Tem certeza que deseja forçar a devolução desse livro?</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-outline-danger"
+                           asp-route-id="@rent.Id"
+                           asp-action="ForceReturnBook">DEVOLVER LIVRO</a>
+                        <a class="btn btn-primary" data-bs-dismiss="modal">VOLTAR</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     }
 }
