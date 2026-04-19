@@ -11,4 +11,8 @@ public interface IRequestRepository : IBaseRepository<Request>
     Task<IEnumerable<Request>> GetRequestsByType(RequestTypeEnum type);
     Task<IEnumerable<Request>> GetActiveRequestsByType(RequestTypeEnum type);
     Task<IEnumerable<Request>> GetActiveRequests();
+    Task<int> GetPendingRequestsCountAsync(RequestTypeEnum type);
+    Task<IEnumerable<Request>> GetRequestsByObjIdAsync(Guid objId, RequestTypeEnum type);
+    Task<(bool success, string message)> DeleteRequestsByObjIdAsync(Guid objId, RequestTypeEnum type);
+
 }

@@ -12,6 +12,7 @@ function closeDetails(id) {
     const modalInstance = bootstrap.Modal.getInstance(modalElement);
     if (modalInstance) {
         modalInstance.hide();
+        $('.modal-backdrop').remove();
     }
 }
 

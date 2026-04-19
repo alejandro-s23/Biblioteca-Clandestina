@@ -30,4 +30,19 @@ public class BookRentRepository(LibraryContext context) : BaseRepository<BookRen
             .Include(bookRent => bookRent.Book)
             .FirstOrDefaultAsync(b => b.UserId == userId && b.ReturnDate == null);
     }
+
+    public async Task<int> GetActiveRentsCountAsync()
+    {
+        return await DbSet.Where(r => r.ReturnDate == null).CountAsync();
+    }
+
+    public async Task<IEnumerable<BookRent>> GetRentsByBook(Guid bookId)
+    {
+        return await DbSet.Where(r => r.BookId == bookId).ToListAsync();
+    }
+
+    public async Task<IEnumerable<BookRent>> GetActiveRentsByBook(Guid bookId)
+    {
+        return await DbSet.Where(r => r.BookId == bookId && r.ReturnDate == null).ToListAsync();
+    }
 }

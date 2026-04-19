@@ -4,7 +4,7 @@ using Library.Services.Interfaces;
 
 namespace Library.Services;
 
-public class BookService (IBookRepository bookRepository): IBookService
+public class BookService (IBookRepository bookRepository, IBookRentRepository rentRepository): IBookService
 {
     public async Task<IEnumerable<Book>> GetOrderedBooksAsync(string searchString,string sortOrder, string sortField)
     {
@@ -56,5 +56,31 @@ public class BookService (IBookRepository bookRepository): IBookService
         }
 
         return false;
+    }
+
+    public async Task<(bool success, string message)> Delete(Guid id)
+    {
+        var book = await bookRepository.GetByIdAsync(id);
+        if (book == null)
+        {
+            return (false, "Livro não encontrado");
+        }
+
+        var activeRents = await rentRepository.GetActiveRentsByBook(book.Id);
+        if (activeRents.Any())
+        {
+            return (false, "Há empréstimos ativo para este livro! \n Devolva ele às estantes para depois queima-lo!");
+        }
+        book.IsDeleted =  true;
+        try
+        {
+            await bookRepository.Update(book);
+            return (true, string.Empty);
+
+        }
+        catch (Exception e)
+        {
+            return (false, e.Message);
+        }
     }
 }

@@ -9,4 +9,5 @@ public interface IRentalService
     Task<BookRent?> GetActiveRentAsync(Guid clientId);
     Task<IEnumerable<BookRent>> GetActiveRents(int size = 0);
     Task<IEnumerable<BookRent>> GetAllRentsAsync();
+    Task<int> GetActiveRentsCountAsync();
 }

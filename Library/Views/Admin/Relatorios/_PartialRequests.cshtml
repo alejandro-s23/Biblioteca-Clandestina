@@ -50,7 +50,7 @@
         <thead>
         <tr>
             <th>NOME</th>
-            <th>CRIADA</th>
+            <th>CRIADA EM</th>
             <th>AÇÃO</th>
         </tr>
         </thead>
@@ -79,7 +79,7 @@
             <thead>
             <tr>
                 <th>NOME</th>
-                <th>CRIADA</th>
+                <th>CRIADA EM</th>
                 <th>AÇÃO</th>
             </tr>
             </thead>
@@ -136,13 +136,25 @@
                                 <td>DATA DO EMPRÉSTIMO</td>
                                 <td>@request.Body.Book.CurrentRent.RentDate</td>
                             </tr>
+                            <tr>
+                                <td>DIAS EMPRESTADOS ATÉ A DEVOLUÇÃO</td>
+                                @if (request.Body.BookRent.RentTimeDays > 14)
+                                {
+                                    <td class="text-danger">@request.Body.BookRent.RentTimeDays</td>
+                                }
+                                else
+                                {
+                                    <td class="text-success">@request.Body.BookRent.RentTimeDays</td>
+
+                                }
+                            </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <a class="btn btn-outline-success" asp-controller="Admin" asp-action="Approve" asp-route-id="@request.Id" >APROVAR</a>
-                    <a class="btn btn-outline-danger" asp-controller="Admin" asp-action="Reprove" asp-route-id="@request.Id" >NEGAR</a>
+                    <a class="btn btn-outline-danger" >NEGAR</a>
                 </div>
             </div>
         </div>
@@ -209,7 +221,7 @@
                 </div>
                 <div class="modal-footer">
                     <a class="btn btn-outline-success" asp-controller="Admin" asp-action="Approve" asp-route-id="@requestDto.Id" >APROVAR</a>
-                    <button class="btn btn-outline-danger" onclick="closeDetails('@requestDto.Id')">ENCERRAR ENTREVISTA</button>
+                    <button class="btn btn-outline-primary" onclick="closeDetails('@requestDto.Id')">ENCERRAR ENTREVISTA</button>
                 </div>
                 </div>
         </div>

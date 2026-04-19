@@ -25,6 +25,38 @@ public class RequestRepository(LibraryContext context) :
                                          &&  r.Type == type);
     }
 
+    public async Task<int> GetPendingRequestsCountAsync(RequestTypeEnum type)
+    {
+        return await DbSet
+            .Where(r => r.Status == RequestStatusEnum.PENDING 
+                        && r.Type == type).CountAsync();
+    }
+
+    public async Task<IEnumerable<Request>> GetRequestsByObjIdAsync(Guid objId, RequestTypeEnum type)
+    {
+        return type switch
+        {
+            RequestTypeEnum.REGISTER => await DbSet.Where(r => r.UserId == objId).ToListAsync(),
+            RequestTypeEnum.RETURNS => await DbSet
+                .Where(r => (r.Body["BookId"] is Guid ? (Guid)r.Body["BookId"] : Guid.Empty) == objId).ToListAsync(),
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+        };
+    }
+
+    public async Task<(bool success, string message)> DeleteRequestsByObjIdAsync(Guid objId, RequestTypeEnum type)
+    {
+        return type switch
+        {
+            RequestTypeEnum.REGISTER => await DbSet
+                .Where(r => r.Id == objId)
+                .ExecuteDeleteAsync() > 0 ? (true, string.Empty) : (false, "0 Solicitações de registro apagadas."),
+            RequestTypeEnum.RETURNS => await DbSet
+                .Where(r => (r.Body["BookId"] is Guid ? (Guid)r.Body["BookId"] : Guid.Empty) == objId)
+                .ExecuteDeleteAsync() > 0 ? (true, string.Empty) : (false, "0 Solicitações de devolução apagadas."),
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+        };
+    }
+
     public async Task<IEnumerable<Request>> GetRequestsByType(RequestTypeEnum type)
     {
         return await DbSet

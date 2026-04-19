@@ -77,54 +77,88 @@
 {
     @foreach (var book in Model.Books)
     {
-    <div id="@book.Id" class="modal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-fluid">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">LIVRO: @book.Title</h5>
-                    <button type="button" class="btn-close" onclick="closeDetails('@book.Id')" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="container">
-                        <table class="table table-hover italic">
-                            <thead>
-                            <tr>
-                                <th>CAMPO</th>
-                                <th>REGISTRO</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>AUTOR</td>
-                                <td>@book.Author</td>
-                            </tr>
-                            <tr>
-                                <td>DISPONIBILIDADE</td>
-                                @if (book.Available)
-                                {
-                                    <td class="text-success">DISPONÍVEL</td>
-                                }
-                                else
-                                {
-                                    <td class="text-danger">RESERVADO</td>
-                                }
-                            </tr>
-                            @if (book is { Available: false, CurrentRent: not null })
-                            {
-                                <tr>
-                                    <td>PORTADOR</td>
-                                    <td>@book.CurrentRent.User.FirstName @book.CurrentRent.User.LastName</td>
-                                </tr>
-                            }
-                            </tbody>
-                        </table>
+        <div id="@book.Id" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered modal-fluid">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">LIVRO: @book.Title</h5>
+                        <button type="button" class="btn-close" onclick="closeDetails('@book.Id')" aria-label="Close"></button>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <a class="btn btn-outline-primary" onclick="closeDetails('@book.Id')" >FECHAR</a>
+                    <div class="modal-body">
+                        <div class="container">
+                            <table class="table table-hover italic">
+                                <thead>
+                                <tr>
+                                    <th>CAMPO</th>
+                                    <th>REGISTRO</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>AUTOR</td>
+                                    <td>@book.Author</td>
+                                </tr>
+                                <tr>
+                                    <td>DISPONIBILIDADE</td>
+                                    @if (book.Available)
+                                    {
+                                        <td class="text-success">DISPONÍVEL</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-danger">RESERVADO</td>
+                                    }
+                                </tr>
+                                @if (book is { Available: false, CurrentRent: not null })
+                                {
+                                    <tr>
+                                        <td>PORTADOR</td>
+                                        <td>@book.CurrentRent.User.FirstName @book.CurrentRent.User.LastName</td>
+                                    </tr>
+                                }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-outline-danger" onclick="openDetails('@book.GetHashCode()')">QUEIMAR LIVRO</a>
+                        <a class="btn btn-outline-primary" onclick="closeDetails('@book.Id')">FECHAR</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+        
+        //Modal de apagar livro
+        <div id="@book.GetHashCode()" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered modal-fluid">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Tem certeza disso?</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <p class="text-clandestino">Tem certeza que deseja "queimar" esse livro?</p>
+                            <p class="text-clandestino">Ao fazer isso, serão perdidos todos os registros acerca deste volume.</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-outline-danger"
+                           onclick="closeDetails('@book.GetHashCode()'); closeDetails('@book.Id')"
+                           asp-route-id="@book.Id"
+                           asp-action="DeleteBook">QUEIMAR!</a>
+                        <a class="btn btn-primary" data-bs-dismiss="modal">GUARDAR NOVAMENTE</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     }
 }
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        let myModal = new bootstrap.Modal(document.getElementById('globalModalError'));
+        myModal.show();
+    });
+</script>
+
