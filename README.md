@@ -41,9 +41,9 @@ Antes de começar, verifique se você atendeu aos seguintes requisitos:
 - Você tem uma máquina `Mac`, `Linux` ou `Windows`. (Desenvolvido e testado no macOS via JetBrains Rider).
 - Você possui uma instância de SQL Server ou banco de dados configurado no `appsettings.json`.
 
-## 🚀 Instalando <nome_do_projeto>
+## 🚀 Instalando JagLib
 
-Para instalar o <nome_do_projeto>, siga estas etapas:
+Para instalar o JagLib, siga estas etapas:
 
 Linux e macOS:
 
