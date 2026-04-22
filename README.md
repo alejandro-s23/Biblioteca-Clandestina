@@ -48,7 +48,7 @@ Para instalar o JagLib, siga estas etapas:
 Linux e macOS:
 
 ```
-git clone https://github.com/ale-souza/biblioteca-clandestina.git
+git clone https://github.com/alejandro-s23/biblioteca-clandestina.git
 cd biblioteca-clandestina
 dotnet restore
 ```
@@ -56,28 +56,34 @@ dotnet restore
 Windows:
 
 ```
-git clone https://github.com/ale-souza/biblioteca-clandestina.git
+git clone https://github.com/alejandro-s23/biblioteca-clandestina.git
 cd biblioteca-clandestina
 dotnet restore
 ```
 
 ## ☕ Usando o aplicativo
 
-Para utilizado o software, siga estas etapas:
+Para utilizar o software, siga estas etapas:
 
-1- Atualize o banco de dados via Entity Framework
+1- Entre na pasta do projeto Library
 
+```bash
+cd Library
 ```
+
+2- Atualize o banco de dados via Entity Framework
+
+```bash
 dotnet ef database update
 ```
 
-2- Execute a aplicação
+3- Execute a aplicação
 
-```
+```bash
 dotnet run
 ```
 
-3- Acesse `http://localhost:5000` (ou a porta indicada no console) no seu navegador para visualizar a interface.
+4- Acesse `http://localhost:5000` (ou a porta indicada no console) no seu navegador para visualizar a interface.
 
 
 ## 📫 Contribuindo para Biblioteca Clandestina
