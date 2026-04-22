@@ -64,6 +64,7 @@ dotnet restore
 ## ☕ Usando o aplicativo
 
 Para utilizado o software, siga estas etapas:
+
 1- Atualize o banco de dados via Entity Framework
 
 ```
