@@ -71,6 +71,8 @@ public class RequestService(
                 var returns = obj as ReturnsRequestBody;
                 returns.Book = await bookRepository.GetByIdAsync(returns.BookId);
                 returns.BookRent = await bookRentRepository.GetByIdAsync(returns.RentId);
+                returns.BookRent?.RentTimeDays =
+                    (int)(Math.Ceiling(model.CreatedAt.Subtract(returns.RentDate).TotalDays));
                 return returns;
             default:
                 throw new ArgumentOutOfRangeException(nameof(model.Type));

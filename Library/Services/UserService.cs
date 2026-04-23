@@ -56,6 +56,11 @@ public class UserService(IBookRepository bookRepository, IUserRepository userRep
         return userRepository.GetByIdAsync(userId);
     }
 
+    public async Task<(bool success, string message)> ResetPasswordAsync(Guid userId, string password = "")
+    {
+        return await userRepository.ResetPasswordAsync(userId, password);
+    }
+
     public async Task<(bool success, string message)> RegisterAsync(User client)
     {
         return (await userRepository.Add(client), string.Empty);

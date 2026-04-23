@@ -8,6 +8,7 @@ public class UserProfileViewModel
     public string? Number { get; set; }
     public string? Address { get; set; }
     public string? District { get; set; }
+    public string? City { get; set; }
 
     // Dados de Leitura (Fixos)
     public string? FullName { get; set; }

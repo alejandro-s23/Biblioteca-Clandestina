@@ -78,67 +78,93 @@
 {
     foreach (var user in Model.Users)
     {
-    <div id="@user.Id" class="modal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-fluid">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">ENTREVISTA: @user.FirstName</h5>
-                    <button type="button" class="btn-close" onclick="closeDetails('@user.Id')" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="container">
-                        <table class="table table-hover italic">
-                            <thead>
-                            <tr>
-                                <th>PERGUNTADO</th>
-                                <th>RESPONDIDO</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>NOME COMPLETO</td>
-                                <td>@user.FirstName @user.LastName</td>
-                            </tr>
-                            <tr>
-                                <td>MATRÍCULA</td>
-                                <td>@user.Registration</td>
-                            </tr>
-                            <tr>
-                                <td>CIDADE DE RESIDÊNCIA</td>
-                                <td>@user.City</td>
-                            </tr>
-                            <tr>
-                                <td>BAIRRO</td>
-                                <td>@user.District</td>
-                            </tr>
-                            <tr>
-                                <td>ENDEREÇO</td>
-                                <td>@user.Address, @user.AddressNumber</td>
-                            </tr>
-                            @if (!user.Complement.IsNullOrEmpty())
-                            {
-                                <tr>
-                                    <td>COMPLEMENTO</td>
-                                    <td>@user.Complement</td>
-                                </tr>
-                            }
-                            <tr>
-                                <td>TELEFONE</td>
-                                <td>@user.Phone</td>
-                            </tr>
-                            <tr>
-                                <td>CORREIO ELETRÔNICO</td>
-                                <td>@user.Email</td>
-                            </tr>
-                            </tbody>
-                        </table>
+        <div id="@user.Id" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered modal-fluid">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">ENTREVISTA: @user.FirstName</h5>
+                        <button type="button" class="btn-close" onclick="closeDetails('@user.Id')" aria-label="Close"></button>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-outline-danger" asp-controller="Admin" asp-action="ResetPass">RESETAR SENHA</button>
+                    <div class="modal-body">
+                        <div class="container">
+                            <table class="table table-hover italic">
+                                <thead>
+                                <tr>
+                                    <th>PERGUNTADO</th>
+                                    <th>RESPONDIDO</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>NOME COMPLETO</td>
+                                    <td>@user.FirstName @user.LastName</td>
+                                </tr>
+                                <tr>
+                                    <td>MATRÍCULA</td>
+                                    <td>@user.Registration</td>
+                                </tr>
+                                <tr>
+                                    <td>CIDADE DE RESIDÊNCIA</td>
+                                    <td>@user.City</td>
+                                </tr>
+                                <tr>
+                                    <td>BAIRRO</td>
+                                    <td>@user.District</td>
+                                </tr>
+                                <tr>
+                                    <td>ENDEREÇO</td>
+                                    <td>@user.Address, @user.AddressNumber</td>
+                                </tr>
+                                @if (!user.Complement.IsNullOrEmpty())
+                                {
+                                    <tr>
+                                        <td>COMPLEMENTO</td>
+                                        <td>@user.Complement</td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <td>TELEFONE</td>
+                                    <td>@user.Phone</td>
+                                </tr>
+                                <tr>
+                                    <td>CORREIO ELETRÔNICO</td>
+                                    <td>@user.Email</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline-danger" onclick="openDetails('@user.GetHashCode()')">RESETAR SENHA</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+        //Modal de confirmação de ação
+        <div id="@user.GetHashCode()" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered modal-fluid">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Tem certeza disso?</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <p class="text-clandestino">Tem certeza que deseja resetar a senha do usuário:</p>
+                            <p class="text-clandestino">@user.FirstName @user.LastName</p>
+                            <p class="text-clandestino">(Lembrando, a nova senha será o CPF do usuário)</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-outline-danger"
+                           onclick="closeDetails('@user.GetHashCode()'); closeDetails('@user.Id')"
+                           asp-route-id="@user.Id"
+                           asp-action="ResetPassword"
+                           >RESETAR SENHA!</a>
+                        <a class="btn btn-primary" data-bs-dismiss="modal">VOLTAR</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     }
 }

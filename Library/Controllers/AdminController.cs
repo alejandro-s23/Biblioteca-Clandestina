@@ -82,6 +82,19 @@ public class AdminController(
         
         return View(book);
     }
+    
+    [HttpPost]
+    public async Task<IActionResult> ResetPassword(Guid id, string password = "")
+    {
+        var result = await userService.ResetPasswordAsync(id, password);
+        if (!result.success)
+        {
+            TempData["ErrorMessage"] = result.message;
+        }
+        TempData["SuccessMessage"] = "Senha alterada com sucesso!";
+        return RedirectToAction("Relatorios", "Admin");
+        
+    }
 
     public async Task<IActionResult> Relatorios()
     {
@@ -129,7 +142,7 @@ public class AdminController(
             Books = await bookService.GetAllBooksAsync(),
             Rents = rent,
             Users = users,
-            SignUpRequests = signupRequestsDto, // Já é uma lista processada
+            SignUpRequests = signupRequestsDto,
             ReturnsRequests = returnsRequestsDto,
         };
         return View("Relatorios/Relatorios", viewModel);
@@ -161,12 +174,19 @@ public class AdminController(
         return RedirectToAction("Relatorios", "Admin");
     }
 
-    public async Task<IActionResult> ForceReturnBook(Guid id)
+    public async Task<IActionResult> ForceReturnBook(Guid bookId)
     {
-        var result = await rentalService.ReturnBookAsync(id);
+        var result = await rentalService.ReturnBookAsync(bookId);
 
         if (!result.Success)
+        {
             TempData["ErrorMessage"] = result.Message;
+            return RedirectToAction("Relatorios", "Admin");
+
+        }
+        TempData["SuccessMessage"] = "Livro Devolvido com sucesso!";
         return RedirectToAction("Relatorios", "Admin");
+
     }
+    
 }

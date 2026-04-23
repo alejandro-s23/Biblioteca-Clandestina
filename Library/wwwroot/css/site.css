@@ -5,6 +5,10 @@ html {
   min-height: 100%;
 }
 
+body:not(.modal-open) .modal-backdrop{
+  display: none;
+}
+
 @media (min-width: 768px) {
   html {
     font-size: 16px;
@@ -58,10 +62,8 @@ body {
   border-color: var(--texto-tinta) !important;
 }
 .btn-border-manuscrito:hover {
-  border-color: var(--bs-success) !important;
-  border-width: 0.2rem;
+  transform: scale(1.05);
   font-weight: bold;
-  color: var(--texto-tinta) !important;
 }
 
 .text-clandestinoLight {
@@ -78,13 +80,68 @@ body {
 }
 
 /* Sobrescrevendo a cor 'preta' do Bootstrap Navbar */
-.navbar-light .navbar-brand,
-.navbar-light .nav-link,
-.navbar-light{
-  background-color: var(--texto-tinta); 
-  color: var(--fundo-manuscrito);
-  font-family: 'Lora', 'Georgia', serif; /* Fonte com serifa para parecer livro */
-  font-weight: 600;
+/* Estilização da Marca (Logotipo) */
+.navbar-brand {
+  font-family: 'Eagle Lake', cursive; /* Fonte temática importada no Layout  */
+  font-size: 1.3rem;
+  font-weight: bold;
+  padding: .5rem 1rem;
+  color: #f8f9fa !important; /* Um branco levemente "sujo" para evitar fadiga visual */
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Sombra sutil para dar profundidade */
+  transition: transform 0.3s ease;
+  display: flex;
+  align-items: center;
+}
+
+/* Efeito ao passar o mouse na marca */
+.navbar-brand:hover {
+  transform: scale(1.05); /* Leve pulsação ao interagir */
+  color: #e0e0e0 !important;
+}
+
+/* Container da lista de navegação */
+.navbar-nav {
+  gap: 1.5rem; /* Espaçamento uniforme entre os itens sem precisar de margens manuais */
+  align-items: center;
+}
+.navbar{
+  background-color: var(--texto-tinta);
+}
+
+/* Estilo base para os links do menu */
+.navbar .nav-link {
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; /* Fonte limpa para contraste */
+  font-size: 0.85rem;
+  font-weight: 500;
+  background-color: var(--texto-tinta);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: rgba(248, 249, 250, 0.7) !important; /* Branco suave com transparência */
+  transition: all 0.3s ease;
+  padding: 0.5rem !important;
+  position: relative; /* Necessário para o efeito da linha abaixo */
+}
+
+/* Efeito Hover e Estado Ativo */
+.navbar .nav-link:hover{
+  color: #f8f9fa !important; /* Brilha no hover */
+}
+
+/* Linha decorativa que aparece no hover (Indicador de UX) */
+.navbar .nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #d4a373; /* Tom bronze/couro para combinar com o tema */
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
 }
 
 .navbar-toggler-icon {
@@ -94,12 +151,89 @@ body {
   border-color: var(--texto-tinta);
 }
 
-
-/* Efeito de 'Passar a Pena' (Hover) */
-.navbar-light .nav-link:hover {
-  
-  text-decoration: underline; /* Simula um grifo manual */
+/* Container do Logout (alinhado à direita) */
+/* Container do Logout */
+.navbar-nav.ms-auto {
+  align-items: center;
+  padding: 1rem 0; /* Espaçamento interno para não grudar no item de cima no mobile */
 }
+
+/* Aplica a borda lateral apenas em telas Desktop (min-width: 576px) */
+/* O Bootstrap usa 576px como o breakpoint padrão do 'navbar-expand-sm' */
+@media (min-width: 576px) {
+  .navbar-nav.ms-auto {
+    padding-left: 1rem;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-left: 1px solid rgba(212, 163, 115, 0.3);
+  }
+}
+
+/* Ajuste fino para o botão no Mobile */
+@media (max-width: 575.98px) {
+  .nav-logout {
+    width: 100%; /* Faz o botão ocupar a largura toda no mobile, facilitando o toque */
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+}
+
+/* Transformando o link de Logout em um botão Outline */
+.nav-link.nav-logout {
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #e63946 !important; /* Vermelho sutil para indicar saída/alerta */
+  border: 1px solid #e63946;
+  padding: 0.4rem 1rem !important;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+/* Container das Tabs */
+.nav-tabs {
+  border-bottom: 2px solid rgba(212, 163, 115, 0.2); /* Linha suave cor de couro */
+  gap: 10px;
+}
+
+/* Estilo Base dos Links das Tabs */
+.nav-link.tab-clandestina {
+  font-family: 'Segoe UI', sans-serif;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #6c757d !important; /* Cinza discreto para abas inativas */
+  border: none !important;
+  background: transparent !important;
+  padding: 10px 20px;
+  transition: all 0.3s ease;
+}
+
+/* Aba Ativa */
+.nav-link.tab-clandestina.active {
+  color: #d4a373 !important; /* Bronze/Couro para a aba ativa */
+  border-bottom: 3px solid #d4a373 !important; /* Linha de destaque inferior */
+  background: rgba(212, 163, 115, 0.05) !important; /* Fundo sutil */
+}
+
+/* Hover em abas inativas */
+.nav-link.tab-clandestina:hover:not(.active) {
+  color: #495057 !important;
+  border-bottom: 3px solid rgba(212, 163, 115, 0.3) !important;
+}
+
+/* Efeito de preenchimento no Hover */
+.nav-logout:hover {
+  background-color: #e63946;
+  color: #f8f9fa !important;
+  box-shadow: 0 0 10px rgba(230, 57, 70, 0.4);
+  transform: translateY(-1px);
+}
+
 
 #filter{
   border-color: var(--texto-tinta) !important;
@@ -120,19 +254,6 @@ body {
   box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
 }
 
-/* Força a visibilidade da tinta no input e na lista de sugestões */
-input[list].input-manuscrito {
-  color: var(--texto-tinta) !important;
-  background-color: var(--fundo-manuscrito) !important;
-}
-
-/* Remove o estilo azulado de foco que apareceu no seu print anterior */
-.input-manuscrito:focus {
-  outline: none !important;
-  border-bottom: 2px solid var(--borda-couro) !important;
-  box-shadow: none !important;
-}
-
 /* Estilo para as opções do datalist em alguns navegadores */
 datalist option {
   background-color: var(--fundo-manuscrito);
@@ -141,13 +262,6 @@ datalist option {
 /* Remove a interferência de cores do sistema no datalist */
 input::-webkit-calendar-picker-indicator {
   display: none !important; /* Esconde a seta nativa que causa o bug de cor no Mac */
-}
-
-/* Garante que o texto digitado seja sempre da cor da tinta */
-.input-manuscrito {
-  color: #3c2f2f !important;
-  background-color: #f4f1ea !important;
-  -webkit-text-fill-color: #3c2f2f !important; /* Força a cor no Safari/Chrome */
 }
 
 /* Tenta forçar a cor das opções que o navegador renderiza */
@@ -196,3 +310,66 @@ input::-webkit-calendar-picker-indicator {
   padding: 20px;
   width: 50%; }
 .modal.open { display: block; }
+
+/* Labels estilizadas */
+.label-clandestino {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #8b5e34;
+  margin-bottom: 5px;
+  display: block;
+}
+
+/* Inputs personalizados */
+.input-clan {
+  background-color: rgba(212, 163, 115, 0.05) !important;
+  border: 1px solid rgba(212, 163, 115, 0.3) !important;
+  border-radius: 4px !important;
+  font-size: 1rem;
+  color: #495057;
+}
+
+.input-clan:focus {
+  border-color: #d4a373 !important;
+  box-shadow: 0 0 0 0.25rem rgba(212, 163, 115, 0.1) !important;
+}
+
+/* Botão Principal: Atualizar Registro */
+.btn-save-clandestino {
+  background-color: #d4a373 !important;
+  border: none !important;
+  color: #fff !important;
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 12px 25px !important;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-save-clandestino:hover {
+  background-color: #8b5e34 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Botão Secundário: Trocar Senha */
+.btn-password-clandestino {
+  background-color: transparent !important;
+  border: 2px solid #d4a373 !important;
+  color: #d4a373 !important;
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 10px 20px !important;
+  transition: all 0.3s ease;
+}
+
+.btn-password-clandestino:hover {
+  background-color: rgba(212, 163, 115, 0.1) !important;
+  color: #8b5e34 !important;
+  border-color: #8b5e34 !important;
+}
