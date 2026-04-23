@@ -138,14 +138,13 @@
                             </tr>
                             <tr>
                                 <td>DIAS EMPRESTADOS ATÉ A DEVOLUÇÃO</td>
-                                @if (request.Body.BookRent.RentTimeDays > 14)
+                                @if (request.DaysToReturn > 14)
                                 {
-                                    <td class="text-danger">@request.Body.BookRent.RentTimeDays</td>
+                                    <td class="text-danger">@request.DaysToReturn</td>
                                 }
                                 else
                                 {
-                                    <td class="text-success">@request.Body.BookRent.RentTimeDays</td>
-
+                                    <td class="text-success">@request.DaysToReturn</td>
                                 }
                             </tr>
                             </tbody>

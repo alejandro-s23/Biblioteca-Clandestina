@@ -17,5 +17,6 @@ public interface IUserService
     Task<List<User>> GetActiveUsersListAsync(int size = 0);
 
     Task<(bool success, string message)> ApproveUser(Guid userId);
+    Task<(bool success, string message)> ResetPasswordAsync(Guid userId, string password = "");
     Task<IEnumerable<User>> GetAOrderedUsersAsync(string searchString, string sortOrder, string sortField);
 }

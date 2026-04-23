@@ -1,18 +1,28 @@
 function openDetails(id) {
-    const modalElement = document.getElementById(id);
+    let modalElement = document.getElementById(id);
     if (modalElement) {
         // Inicializa e abre o modal do Bootstrap
-        const myModal = new bootstrap.Modal(modalElement);
+        let myModal = new bootstrap.Modal(modalElement);
         myModal.show();
     }
 }
 
 function closeDetails(id) {
-    const modalElement = document.getElementById(id);
-    const modalInstance = bootstrap.Modal.getInstance(modalElement);
-    if (modalInstance) {
+    let element = document.getElementById(id);
+    if (element) {
+        // Tenta pegar a instância existente que o Bootstrap criou
+        let modalInstance = bootstrap.Modal.getInstance(element);
+
+        // Se não encontrar, tenta criar uma apenas para fechar
+        if (!modalInstance) {
+            modalInstance = new bootstrap.Modal(element);
+        }
+
         modalInstance.hide();
+
+        // Remove o backdrop manualmente caso o Bootstrap falhe em limpar
         $('.modal-backdrop').remove();
+        $('body').removeClass('modal-open').css('overflow', '');
     }
 }
 

@@ -9,4 +9,5 @@ public interface IUserRepository : IBaseRepository<User>
     Task<IEnumerable<User>> GetActiveUsersAsync(int size);
     Task<List<User>> GetActiveUsersListAsync(int size);
     Task<IEnumerable<User>> GetUsersByNameAsync(string name);
+    Task<(bool success, string message)> ResetPasswordAsync(Guid userId, string password = "");
 }

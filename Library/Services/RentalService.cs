@@ -67,7 +67,7 @@ public class RentalService(
         }
         return (false, "Erro inesperado.");
     }
-
+    
     public async Task<BookRent?> GetActiveRentAsync(Guid userId)
     {
         return await rentRepository.GetActiveRentAsync(userId);

@@ -37,6 +37,7 @@ public class AccountController(IUserService userService, IRentalService rentalSe
             Number = user.AddressNumber,
             Address = user.Address,
             District = user.District,
+            City =  user.City,
             Phone = user.Phone,
             HomePage = User.GetHomePage(),
             HasReturnRequest = await hasActiveRequest
@@ -70,7 +71,9 @@ public class AccountController(IUserService userService, IRentalService rentalSe
             Phone = model.Phone,
             Address = model.Address,
             District = model.District,
-            AddressNumber = model.Number
+            AddressNumber = model.Number,
+            City = model.City
+            
         };
 
         var result = await userService.UpdateProfileAsync(clientData);
@@ -104,6 +107,40 @@ public class AccountController(IUserService userService, IRentalService rentalSe
             }
         }
     
+        return RedirectToAction("Profile");
+    }
+    
+    [HttpGet]
+    public IActionResult ChangePassword()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+    {
+        var user = await userService.GetUserByIdAsync(User.GetUserId());
+        if (user == null)
+        {
+            TempData["ErrorMessage"] = "Usuário não logado";
+            return RedirectToAction("Index", "Access");
+        }
+
+        if (user.Password != model.OldPassword)
+        {
+            TempData["ErrorMessage"] = "Sua senha antiga está incorreta!";
+            return View();
+        }
+
+        var result = await userService.ResetPasswordAsync(user.Id, model.NewPassword);
+
+        if (!result.success)
+        {
+            TempData["ErrorMessage"] =  result.message;
+            return View();
+        }
+        
+        TempData["SuccessMessage"] = "Senha alterada com sucesso!";
         return RedirectToAction("Profile");
     }
 }

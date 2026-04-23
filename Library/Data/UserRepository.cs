@@ -40,4 +40,20 @@ public class UserRepository (LibraryContext context): BaseRepository<User>(conte
                 (u.FirstName + " " + u.LastName).ToLower().Contains(name.ToLower()))
             .ToListAsync();
     }
+
+    public async Task<(bool success, string message)> ResetPasswordAsync(Guid userId, string password = "")
+    {
+        var user = await DbSet.FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null) return (false, "Usuário não encontrado!");
+        
+        if (password != "" && password.Length < 6) return (false, "A nova senha deve conter no mínimo 6 caracteres!");
+        
+        user.Password = password == "" ? user.CPF : password;
+        
+        if (!await Update(user)) return (false, "Erro inesperado ao atualizar a senha!");
+        
+        return (true, string.Empty);
+        
+    }
 }

@@ -32,3 +32,20 @@ document.addEventListener('click', (e) => {
         dropdown.classList.add('d-none');
     }
 });
+
+//Modals Globais
+document.addEventListener("DOMContentLoaded", () => {
+    let myErrorModal = new bootstrap.Modal(document.getElementById('globalModalError'));
+    show(myErrorModal);
+});
+
+function abrirLivro(btn) {
+    const titulo = btn.getAttribute('data-titulo');
+    const conteudo = btn.getAttribute('data-sinopsia');
+    
+    document.getElementById('sinopseTitulo').innerText = titulo;
+    document.getElementById('sinopseConteudo').innerText = conteudo ? conteudo : "Este manuscrito ainda possui uma sinopsia escrita! \n Solicite à internet seu resumo!";
+
+    const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalSinopse'));
+    modal.show();
+}
