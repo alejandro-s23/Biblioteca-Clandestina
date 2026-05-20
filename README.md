@@ -11,7 +11,7 @@
 
 > Sistema de gestão de acervos e empréstimos desenvolvido em ASP.NET Core MVC. O projeto automatiza processos manuais de bibliotecas, garantindo integridade de dados e facilidade de manutenção através de uma arquitetura robusta.
 
-### 🛠 Tecnologias e Ferramentas
+### Tecnologias e Ferramentas
 **Linguagem**: C#
 
 **Framework** **Web**: ASP.NET Core MVC (Model-View-Controller), Bootstrap 5
@@ -33,7 +33,7 @@ O projeto ainda está em desenvolvimento e as próximas atualizações serão vo
 - [x] Desenvolvimento das Views Razor para CRUD de Livros
 - [ ] Sistema de relatórios de empréstimos atrasados
 
-## 💻 Pré-requisitos
+## Pré-requisitos
 
 Antes de começar, verifique se você atendeu aos seguintes requisitos:
 
@@ -41,7 +41,7 @@ Antes de começar, verifique se você atendeu aos seguintes requisitos:
 - Você tem uma máquina `Mac`, `Linux` ou `Windows`. (Desenvolvido e testado no macOS via JetBrains Rider).
 - Você possui uma instância de SQL Server ou banco de dados configurado no `appsettings.json`.
 
-## 🚀 Instalando JagLib
+## Instalando JagLib
 
 Para instalar o JagLib, siga estas etapas:
 
@@ -61,7 +61,7 @@ cd biblioteca-clandestina
 dotnet restore
 ```
 
-## ☕ Usando o aplicativo
+## Usando o aplicativo
 
 Para utilizar o software, siga estas etapas:
 
@@ -86,7 +86,7 @@ dotnet run
 4- Acesse `http://localhost:5000` (ou a porta indicada no console) no seu navegador para visualizar a interface.
 
 
-## 📫 Contribuindo para Biblioteca Clandestina
+## Contribuindo para Biblioteca Clandestina
 
 Para contribuir com Biblioteca Clandestina, siga estas etapas:
 
@@ -98,7 +98,7 @@ Para contribuir com Biblioteca Clandestina, siga estas etapas:
 
 Como alternativa, consulte a documentação do GitHub em [como criar uma solicitação pull](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
 
-## 🤝 Colaboradores
+## Colaboradores
 
 Agradecemos às seguintes pessoas que contribuíram para este projeto:
 
@@ -115,6 +115,6 @@ Agradecemos às seguintes pessoas que contribuíram para este projeto:
   </tr>
 </table>
 
-## 📝 Licença
+## Licença
 
 Esse projeto está sob licença. Veja o arquivo [LICENÇA](LICENSE) para mais detalhes.
